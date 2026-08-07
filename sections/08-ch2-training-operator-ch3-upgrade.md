@@ -63,7 +63,9 @@ If you have bookmarked dashboard URLs, you must recreate redirects **after** the
 
    If the **Update approval** is not set to **Manual**, you must set it now. This prevents automatic upgrade when you change the subscription channel.
 
-2. Edit the **Update channel** for Red Hat OpenShift AI to **stable-3.x** or **stable-3.5**, depending on your preference.
+2. Edit the **Update channel** for Red Hat OpenShift AI to **support-required-upgrade-3.5**.
+
+   **Note**: For cross-major upgrades from 2.25 to 3.5, only the **support-required-upgrade-3.5** channel provides a valid upgrade path. Other 3.x channels such as **stable-3.5** or **stable-3.x** are for same-major upgrades only and do not provide an upgrade from 2.25.
 
    For information about subscription channels and their lifecycle, see [Red Hat OpenShift AI Self-Managed Life Cycle](https://access.redhat.com/support/policy/updates/rhoai-sm/lifecycle#stable).
 
@@ -208,26 +210,49 @@ After preparing your cluster and changing the subscription channel, you must man
 
    The output should include the \<ossm-version\> from Step 2\. If it doesn’t include the version from Step 2, make sure that the CatalogSource named redhat-operators references it.
 
-5. Log in to the OpenShift cluster web console as a cluster administrator.
+5. **FBC (File-Based Catalog) environments only:** If you installed Red Hat OpenShift AI using a custom FBC CatalogSource (for example, for pre-release testing), you must update the CatalogSource image to the target version before switching channels. The source FBC fragment only contains channels up to the source version.
 
-6. In the Administrator perspective, in the left menu, select **Operators** \>  
+   ```bash
+   $ oc patch catalogsource <catalog-name> -n openshift-marketplace \
+     --type=merge -p '{"spec":{"image":"<target-fbc-fragment-image>"}}'
+   ```
+
+   Wait for the CatalogSource to reach **READY** state:
+
+   ```bash
+   $ oc get catalogsource <catalog-name> -n openshift-marketplace \
+     -o jsonpath='{.status.connectionState.lastObservedState}'
+   ```
+
+   Verify that the **support-required-upgrade-3.5** channel is now available:
+
+   ```bash
+   $ oc get packagemanifest rhods-operator -n openshift-marketplace \
+     -o jsonpath='{.status.channels[*].name}' | tr ' ' '\n' | grep support
+   ```
+
+   If you installed Red Hat OpenShift AI from the default **redhat-operators** CatalogSource, skip this step.
+
+6. Log in to the OpenShift cluster web console as a cluster administrator.
+
+7. In the Administrator perspective, in the left menu, select **Operators** \>  
     **Installed Operators**.
 
-7. Click the **Red Hat OpenShift AI Operator**.
+8. Click the **Red Hat OpenShift AI Operator**.
 
-8. Click the **Subscription** tab.
+9. Click the **Subscription** tab.
 
-9. For the **Upgrade channel**, select **support-required-upgrade**.
+10. For the **Upgrade channel**, select **support-required-upgrade-3.5**.
 
    **NOTE**:   
-   Several other 3.x channels might be visible in the **Change Subscription update channels** list, such as fast-3.x, stable-3.5, and stable-3.x. However, these channels do not provide an upgrade from 2.25. Only the **support-required-upgrade** channel provides  an upgrade from 2.25.9 or later.
+   Several other 3.x channels might be visible in the **Change Subscription update channels** list, such as fast-3.x, stable-3.5, and stable-3.x. However, these channels do not provide a cross-major upgrade from 2.25. Only the **support-required-upgrade-3.5** channel provides an upgrade from 2.25.9 or later to 3.5. The unversioned **support-required-upgrade** channel is for upgrading from 2.25 to 3.3 only.
 
-10. Approve the install plan to begin the upgrade.
+11. Approve the install plan to begin the upgrade.
 
 1. In the **Upgrade status** section, click the "requires approval" link to approve the upgrade installation.  
 2. Review the upgrade install plan details and click **Approve**. The upgrade process begins.
 
-11. While the upgrade is in progress, monitor the following:
+12. While the upgrade is in progress, monitor the following:
 
 1. Watch the operator pods as they restart to replace the version 2.25.9 (and later) Operator.  
 2. Verify that the new operator pods reach the **Running** state and that the **Ready** condition is **True**.

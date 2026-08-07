@@ -12,7 +12,9 @@ To run the **rhai-cli migrate** actions, you must have write access as a cluster
 
 **Procedure**
 
-Install the cert-manager Operator for Red Hat OpenShift:
+Install the cert-manager Operator for Red Hat OpenShift using one of the following methods:
+
+**Method 1: Using the OpenShift web console**
 
 1. In the OpenShift console, select **Operators** → **Operator Hub**.
 
@@ -21,6 +23,52 @@ Install the cert-manager Operator for Red Hat OpenShift:
 3. Search for **cert-manager Operator for Red Hat OpenShift**.
 
 4. If the tile for the **cert-manager Operator provided by Red Hat** does not have an **Installed** label, install the cert-manager Operator and wait for it to be ready.
+
+**Method 2: Using the OpenShift CLI**
+
+1. Create the namespace, OperatorGroup, and Subscription:
+
+   ```bash
+   $ oc create namespace cert-manager-operator
+   $ oc apply -f - <<EOF
+   apiVersion: operators.coreos.com/v1
+   kind: OperatorGroup
+   metadata:
+     name: cert-manager-operator
+     namespace: cert-manager-operator
+   spec:
+     targetNamespaces:
+     - cert-manager-operator
+     upgradeStrategy: Default
+   EOF
+   $ oc apply -f - <<EOF
+   apiVersion: operators.coreos.com/v1alpha1
+   kind: Subscription
+   metadata:
+     name: openshift-cert-manager-operator
+     namespace: cert-manager-operator
+   spec:
+     channel: stable-v1
+     installPlanApproval: Automatic
+     name: openshift-cert-manager-operator
+     source: redhat-operators
+     sourceNamespace: openshift-marketplace
+   EOF
+   ```
+
+2. Wait for the cert-manager Operator to reach **Succeeded** status:
+
+   ```bash
+   $ oc get csv -n cert-manager-operator --watch
+   ```
+
+3. Verify that cert-manager pods are running:
+
+   ```bash
+   $ oc get pods -n cert-manager
+   ```
+
+   All pods should show **Running** status with all containers ready.
 
 ##  **2.2 Set Kueue management to Removed or Unmanaged** {#2.2-set-kueue-management-to-removed}
 

@@ -149,9 +149,10 @@ Run this backup command on your local machine, not inside the **rhai-cli** conta
 
 **Procedure**
 
-1. Back up the **inferenceservice-config** **ConfigMap**:
+1. Create the backup directory and back up the **inferenceservice-config** **ConfigMap**:
 
    ```bash
+   $ mkdir -p /tmp/rhoai-upgrade-backup
    $ oc get configmap inferenceservice-config -n redhat-ods-applications -o yaml > /tmp/rhoai-upgrade-backup/inferenceservice-config-backup.yaml
    ```
 

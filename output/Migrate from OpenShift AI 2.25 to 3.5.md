@@ -297,7 +297,7 @@ To prepare for the migration of OpenShift AI 2.25.9 (and later) to 3.5,  deploy 
 
 * As part of the pod configuration, specify the rhai-cli container image.
 
-  The container image is available at registry.redhat.io/rhoai/rhai-cli-rhel9:v3.5.
+  The container image is available at quay.io/rhoai/odh-cli-rhel9@sha256:35f6e580b86d3be86df0d1ff0df2d8a66544fe688ffeac267626b17c9cc6b6e3.
 
   This image contains the Red Hat AI command line interface(**rhai-cli)** utility that includes the migration assessment linting CLI and migration actions to assist with pre-upgrade and post-upgrade steps for the Model Serving, Workbenches, TrustyAI, Llama Stack / OGX, AI Pipelines, and Ray Training Operator components.
 
@@ -342,7 +342,7 @@ To prepare for the migration of OpenShift AI 2.25.9 (and later) to 3.5,  deploy 
        spec:
          containers:
            - name: rhai-cli
-             image: registry.redhat.io/rhoai/rhai-cli-rhel9:v3.5
+             image: quay.io/rhoai/odh-cli-rhel9@sha256:35f6e580b86d3be86df0d1ff0df2d8a66544fe688ffeac267626b17c9cc6b6e3
              command:
                - sleep
                - infinity
@@ -429,7 +429,7 @@ Authentication for the cluster is handled when you log in from inside the pod. T
 
 ### **1.3.2. About the rhai-cli container image** {#1.3.2.-about-the-rhai-cli-container-image}
 
-The container image is available at **registry.redhat.io/rhoai/rhai-cli-rhel9:v3.5**. It contains the migration assessment linting CLI and migration actions for specific component migrations.
+The container image is available at **quay.io/rhoai/odh-cli-rhel9@sha256:35f6e580b86d3be86df0d1ff0df2d8a66544fe688ffeac267626b17c9cc6b6e3**. It contains the migration assessment linting CLI and migration actions for specific component migrations.
 
 For details about the container image, including versions, see the [**rhoai/rhai-cli-rhel9** page in the Red Hat Ecosystem Catalog](https://catalog.redhat.com/en/software/containers/rhoai/rhai-cli-rhel9/69a580e6a46d08df99bffe08?image=69a7dc1675d4eb16e91cb5de).
 
@@ -665,7 +665,9 @@ To run the **rhai-cli migrate** actions, you must have write access as a cluster
 
 **Procedure**
 
-Install the cert-manager Operator for Red Hat OpenShift:
+Install the cert-manager Operator for Red Hat OpenShift using one of the following methods:
+
+**Method 1: Using the OpenShift web console**
 
 1. In the OpenShift console, select **Operators** → **Operator Hub**.
 
@@ -674,6 +676,52 @@ Install the cert-manager Operator for Red Hat OpenShift:
 3. Search for **cert-manager Operator for Red Hat OpenShift**.
 
 4. If the tile for the **cert-manager Operator provided by Red Hat** does not have an **Installed** label, install the cert-manager Operator and wait for it to be ready.
+
+**Method 2: Using the OpenShift CLI**
+
+1. Create the namespace, OperatorGroup, and Subscription:
+
+   ```bash
+   $ oc create namespace cert-manager-operator
+   $ oc apply -f - <<EOF
+   apiVersion: operators.coreos.com/v1
+   kind: OperatorGroup
+   metadata:
+     name: cert-manager-operator
+     namespace: cert-manager-operator
+   spec:
+     targetNamespaces:
+     - cert-manager-operator
+     upgradeStrategy: Default
+   EOF
+   $ oc apply -f - <<EOF
+   apiVersion: operators.coreos.com/v1alpha1
+   kind: Subscription
+   metadata:
+     name: openshift-cert-manager-operator
+     namespace: cert-manager-operator
+   spec:
+     channel: stable-v1
+     installPlanApproval: Automatic
+     name: openshift-cert-manager-operator
+     source: redhat-operators
+     sourceNamespace: openshift-marketplace
+   EOF
+   ```
+
+2. Wait for the cert-manager Operator to reach **Succeeded** status:
+
+   ```bash
+   $ oc get csv -n cert-manager-operator --watch
+   ```
+
+3. Verify that cert-manager pods are running:
+
+   ```bash
+   $ oc get pods -n cert-manager
+   ```
+
+   All pods should show **Running** status with all containers ready.
 
 ##  **2.2 Set Kueue management to Removed or Unmanaged** {#2.2-set-kueue-management-to-removed}
 
@@ -2047,9 +2095,10 @@ Run this backup command on your local machine, not inside the **rhai-cli** conta
 
 **Procedure**
 
-1. Back up the **inferenceservice-config** **ConfigMap**:
+1. Create the backup directory and back up the **inferenceservice-config** **ConfigMap**:
 
    ```bash
+   $ mkdir -p /tmp/rhoai-upgrade-backup
    $ oc get configmap inferenceservice-config -n redhat-ods-applications -o yaml > /tmp/rhoai-upgrade-backup/inferenceservice-config-backup.yaml
    ```
 
@@ -3043,7 +3092,9 @@ If you have bookmarked dashboard URLs, you must recreate redirects **after** the
 
    If the **Update approval** is not set to **Manual**, you must set it now. This prevents automatic upgrade when you change the subscription channel.
 
-2. Edit the **Update channel** for Red Hat OpenShift AI to **stable-3.x** or **stable-3.5**, depending on your preference.
+2. Edit the **Update channel** for Red Hat OpenShift AI to **support-required-upgrade-3.5**.
+
+   **Note**: For cross-major upgrades from 2.25 to 3.5, only the **support-required-upgrade-3.5** channel provides a valid upgrade path. Other 3.x channels such as **stable-3.5** or **stable-3.x** are for same-major upgrades only and do not provide an upgrade from 2.25.
 
    For information about subscription channels and their lifecycle, see [Red Hat OpenShift AI Self-Managed Life Cycle](https://access.redhat.com/support/policy/updates/rhoai-sm/lifecycle#stable).
 
@@ -3188,26 +3239,49 @@ After preparing your cluster and changing the subscription channel, you must man
 
    The output should include the \<ossm-version\> from Step 2\. If it doesn’t include the version from Step 2, make sure that the CatalogSource named redhat-operators references it.
 
-5. Log in to the OpenShift cluster web console as a cluster administrator.
+5. **FBC (File-Based Catalog) environments only:** If you installed Red Hat OpenShift AI using a custom FBC CatalogSource (for example, for pre-release testing), you must update the CatalogSource image to the target version before switching channels. The source FBC fragment only contains channels up to the source version.
 
-6. In the Administrator perspective, in the left menu, select **Operators** \>  
+   ```bash
+   $ oc patch catalogsource <catalog-name> -n openshift-marketplace \
+     --type=merge -p '{"spec":{"image":"<target-fbc-fragment-image>"}}'
+   ```
+
+   Wait for the CatalogSource to reach **READY** state:
+
+   ```bash
+   $ oc get catalogsource <catalog-name> -n openshift-marketplace \
+     -o jsonpath='{.status.connectionState.lastObservedState}'
+   ```
+
+   Verify that the **support-required-upgrade-3.5** channel is now available:
+
+   ```bash
+   $ oc get packagemanifest rhods-operator -n openshift-marketplace \
+     -o jsonpath='{.status.channels[*].name}' | tr ' ' '\n' | grep support
+   ```
+
+   If you installed Red Hat OpenShift AI from the default **redhat-operators** CatalogSource, skip this step.
+
+6. Log in to the OpenShift cluster web console as a cluster administrator.
+
+7. In the Administrator perspective, in the left menu, select **Operators** \>  
     **Installed Operators**.
 
-7. Click the **Red Hat OpenShift AI Operator**.
+8. Click the **Red Hat OpenShift AI Operator**.
 
-8. Click the **Subscription** tab.
+9. Click the **Subscription** tab.
 
-9. For the **Upgrade channel**, select **support-required-upgrade**.
+10. For the **Upgrade channel**, select **support-required-upgrade-3.5**.
 
    **NOTE**:   
-   Several other 3.x channels might be visible in the **Change Subscription update channels** list, such as fast-3.x, stable-3.5, and stable-3.x. However, these channels do not provide an upgrade from 2.25. Only the **support-required-upgrade** channel provides  an upgrade from 2.25.9 or later.
+   Several other 3.x channels might be visible in the **Change Subscription update channels** list, such as fast-3.x, stable-3.5, and stable-3.x. However, these channels do not provide a cross-major upgrade from 2.25. Only the **support-required-upgrade-3.5** channel provides an upgrade from 2.25.9 or later to 3.5. The unversioned **support-required-upgrade** channel is for upgrading from 2.25 to 3.3 only.
 
-10. Approve the install plan to begin the upgrade.
+11. Approve the install plan to begin the upgrade.
 
 1. In the **Upgrade status** section, click the "requires approval" link to approve the upgrade installation.  
 2. Review the upgrade install plan details and click **Approve**. The upgrade process begins.
 
-11. While the upgrade is in progress, monitor the following:
+12. While the upgrade is in progress, monitor the following:
 
 1. Watch the operator pods as they restart to replace the version 2.25.9 (and later) Operator.  
 2. Verify that the new operator pods reach the **Running** state and that the **Ready** condition is **True**.
@@ -3278,7 +3352,7 @@ After the upgrade process finishes, you must verify that the environment is stab
 
 2. Select the **Red Hat OpenShift AI 3.5 Operator**. 
 
-3. Select Subscriptions and then select the Upgrade channel: **support-required-upgrade** 
+3. Select Subscriptions and then select the Upgrade channel: **support-required-upgrade-3.5** 
 
 4. From the list of channels, select the 3.x channel that you want to use going forward, for example: **stable-3.5** or **stable-3.x**.
 
@@ -3577,6 +3651,19 @@ After upgrading to OpenShift AI 3.5, confirm that the AI Pipelines platform is h
    ```bash
    $ rhai-cli migrate run --migration ai-pipelines.post-upgrade-check --target-version 3.5.0
    ```
+
+   **Important**
+
+   This command compares post-upgrade pod state against a baseline saved by the `ai-pipelines.pre-upgrade-check` migration during [AI Pipelines - Before upgrade](#2.4.-ai-pipelines---before-upgrade). The baseline file is stored at `/tmp/rhoai-upgrade-backup/ai_pipelines/dspa_pre_upgrade_pods.json` inside the **rhai-cli** container. If the **rhai-cli** pod restarted during the upgrade, this file may have been lost. To avoid this, ensure the backup directory is on the persistent volume (PVC) mounted to the pod, or copy the state file off the pod before starting the upgrade.
+
+   If the pre-upgrade state file is not available, you can skip this automated check and manually verify DSPA health:
+
+   ```bash
+   $ oc get dspa -A
+   $ oc get pods -n <dspa-namespace> | grep ds-pipeline
+   ```
+
+   Confirm that all pipeline server pods are **Running** with all containers ready.
 
 2. Confirm that the output indicates that all AI Pipelines server pods are healthy or in the same state as before the upgrade.
 
@@ -4267,6 +4354,10 @@ All procedures in this section must be completed after upgrading the Red Hat Ope
    $ rhai-cli migrate run --migration workbenches.patch-auth-model --target-version 3.5.0 --only-stopped --with-cleanup
    ```
 
+   **Note**
+
+   This command prompts for interactive confirmation twice: once before patching notebooks, and once before cleaning up legacy OAuth resources. Enter **y** at each prompt to proceed.
+
    As the command runs, it provides output that indicates the status of the patch process. When the command completes, you should see a messages similar to the following:  
 * **Processed 9 workbenches: all succeeded.**  
 *  **Cleanup: all 9 workbenches completed successfully.**
@@ -4775,9 +4866,12 @@ Verify that the upgrade to Red Hat OpenShift AI 3.5 completed successfully and t
 
    ```
    NAMESPACE            NAME          DEPLOYMENT_MODE    READY
-
-     your-isvc-project    isvc-name     RawDeployment      True
+   your-isvc-project    isvc-name     Standard           True
    ```
+
+   **Note**
+
+   In Red Hat OpenShift AI 3.5, **RawDeployment** mode has been renamed to **Standard**. The `DEPLOYMENT_MODE` column displays **Standard** for InferenceServices that were previously shown as **RawDeployment** in version 2.25.
 
 4. If you have **LLMInferenceService** resources, verify their status:
 

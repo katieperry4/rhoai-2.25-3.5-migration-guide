@@ -7,9 +7,15 @@ This guide provides step-by-step instructions for cluster administrators perform
 ## Directory structure
 
 ```
-sections/           12 markdown files, one per chapter/topic (edit here)
-output/             Generated concatenated document (do not edit directly)
-Makefile            Concatenates sections into the final document
+sections/               12 markdown files, one per chapter/topic (edit here)
+output/                 Generated concatenated document (do not edit directly)
+images.conf             Image keys mapped to registry/tag (source of truth)
+image-placeholders.conf Maps image keys to {{PLACEHOLDER}} strings in sections
+scripts/                Build helper scripts
+  resolve-digests.sh    Fetches latest sha256 digests via skopeo
+images.env              Generated digest file (gitignored)
+staging/                Temp dir for placeholder injection (gitignored)
+Makefile                Orchestrates digest resolution, injection, and concatenation
 ```
 
 See [sections/README.md](sections/README.md) for the full section index.
@@ -20,22 +26,44 @@ See [sections/README.md](sections/README.md) for the full section index.
 make build
 ```
 
-This concatenates all section files in order and writes the output to:
+This resolves the latest container image digests via `skopeo`, injects them into section placeholders, and concatenates all section files into:
 
 ```
 output/Migrate from OpenShift AI 2.25 to 3.5.md
 ```
 
-To remove the generated output:
+For documentation-only changes (no image updates needed), skip digest resolution:
+
+```bash
+SKIP_DIGESTS=1 make build
+```
+
+This reuses the existing `images.env` file instead of calling `skopeo`.
+
+To remove generated output, staging, and images.env:
 
 ```bash
 make clean
 ```
 
+### Image digest management
+
+Container image references in section files use `{{PLACEHOLDER}}` tokens (e.g., `{{RHAI_CLI_IMAGE}}`). At build time:
+
+1. `scripts/resolve-digests.sh` reads `images.conf`, calls `skopeo inspect --override-arch amd64 --override-os linux` for each image, and writes resolved `image@sha256:digest` values to `images.env`.
+2. The Makefile copies sections to `staging/`, replaces placeholders using `image-placeholders.conf` + `images.env`, then concatenates.
+
+If `skopeo` times out (default 30s, configurable via `SKOPEO_TIMEOUT`), the script falls back to the previous digest from `images.env`.
+
+To add a new image:
+1. Add a `KEY image:tag` line to `images.conf`
+2. Use `{{KEY_IMAGE}}` in the relevant section file
+3. Add `KEY {{KEY_IMAGE}}` to `image-placeholders.conf`
+
 ## Contributing
 
 1. Edit files in `sections/` (not the generated output).
-2. Run `make build` to regenerate the concatenated document.
+2. Run `make build` to regenerate (or `SKIP_DIGESTS=1 make build` for doc-only changes).
 3. Review the output in `output/`.
 4. Commit both the section changes and the updated output.
 

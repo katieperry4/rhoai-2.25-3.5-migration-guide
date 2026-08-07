@@ -37,6 +37,10 @@ All procedures in this section must be completed after upgrading the Red Hat Ope
    $ rhai-cli migrate run --migration workbenches.patch-auth-model --target-version 3.5.0 --only-stopped --with-cleanup
    ```
 
+   **Note**
+
+   This command prompts for interactive confirmation twice: once before patching notebooks, and once before cleaning up legacy OAuth resources. Enter **y** at each prompt to proceed.
+
    As the command runs, it provides output that indicates the status of the patch process. When the command completes, you should see a messages similar to the following:  
 * **Processed 9 workbenches: all succeeded.**  
 *  **Cleanup: all 9 workbenches completed successfully.**
@@ -545,9 +549,12 @@ Verify that the upgrade to Red Hat OpenShift AI 3.5 completed successfully and t
 
    ```
    NAMESPACE            NAME          DEPLOYMENT_MODE    READY
-
-     your-isvc-project    isvc-name     RawDeployment      True
+   your-isvc-project    isvc-name     Standard           True
    ```
+
+   **Note**
+
+   In Red Hat OpenShift AI 3.5, **RawDeployment** mode has been renamed to **Standard**. The `DEPLOYMENT_MODE` column displays **Standard** for InferenceServices that were previously shown as **RawDeployment** in version 2.25.
 
 4. If you have **LLMInferenceService** resources, verify their status:
 

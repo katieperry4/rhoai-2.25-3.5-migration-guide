@@ -64,7 +64,7 @@ After the upgrade process finishes, you must verify that the environment is stab
 
 2. Select the **Red Hat OpenShift AI 3.5 Operator**. 
 
-3. Select Subscriptions and then select the Upgrade channel: **support-required-upgrade** 
+3. Select Subscriptions and then select the Upgrade channel: **support-required-upgrade-3.5** 
 
 4. From the list of channels, select the 3.x channel that you want to use going forward, for example: **stable-3.5** or **stable-3.x**.
 
@@ -363,6 +363,19 @@ After upgrading to OpenShift AI 3.5, confirm that the AI Pipelines platform is h
    ```bash
    $ rhai-cli migrate run --migration ai-pipelines.post-upgrade-check --target-version 3.5.0
    ```
+
+   **Important**
+
+   This command compares post-upgrade pod state against a baseline saved by the `ai-pipelines.pre-upgrade-check` migration during [AI Pipelines - Before upgrade](#2.4.-ai-pipelines---before-upgrade). The baseline file is stored at `/tmp/rhoai-upgrade-backup/ai_pipelines/dspa_pre_upgrade_pods.json` inside the **rhai-cli** container. If the **rhai-cli** pod restarted during the upgrade, this file may have been lost. To avoid this, ensure the backup directory is on the persistent volume (PVC) mounted to the pod, or copy the state file off the pod before starting the upgrade.
+
+   If the pre-upgrade state file is not available, you can skip this automated check and manually verify DSPA health:
+
+   ```bash
+   $ oc get dspa -A
+   $ oc get pods -n <dspa-namespace> | grep ds-pipeline
+   ```
+
+   Confirm that all pipeline server pods are **Running** with all containers ready.
 
 2. Confirm that the output indicates that all AI Pipelines server pods are healthy or in the same state as before the upgrade.
 

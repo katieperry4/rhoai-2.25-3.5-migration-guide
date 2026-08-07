@@ -120,7 +120,7 @@ To prepare for the migration of OpenShift AI 2.25.9 (and later) to 3.5,  deploy 
 
 * As part of the pod configuration, specify the rhai-cli container image.
 
-  The container image is available at registry.redhat.io/rhoai/rhai-cli-rhel9:v3.5.
+  The container image is available at {{RHAI_CLI_IMAGE}}.
 
   This image contains the Red Hat AI command line interface(**rhai-cli)** utility that includes the migration assessment linting CLI and migration actions to assist with pre-upgrade and post-upgrade steps for the Model Serving, Workbenches, TrustyAI, Llama Stack / OGX, AI Pipelines, and Ray Training Operator components.
 
@@ -165,7 +165,7 @@ To prepare for the migration of OpenShift AI 2.25.9 (and later) to 3.5,  deploy 
        spec:
          containers:
            - name: rhai-cli
-             image: registry.redhat.io/rhoai/rhai-cli-rhel9:v3.5
+             image: {{RHAI_CLI_IMAGE}}
              command:
                - sleep
                - infinity
@@ -252,7 +252,7 @@ Authentication for the cluster is handled when you log in from inside the pod. T
 
 ### **1.3.2. About the rhai-cli container image** {#1.3.2.-about-the-rhai-cli-container-image}
 
-The container image is available at **registry.redhat.io/rhoai/rhai-cli-rhel9:v3.5**. It contains the migration assessment linting CLI and migration actions for specific component migrations.
+The container image is available at **{{RHAI_CLI_IMAGE}}**. It contains the migration assessment linting CLI and migration actions for specific component migrations.
 
 For details about the container image, including versions, see the [**rhoai/rhai-cli-rhel9** page in the Red Hat Ecosystem Catalog](https://catalog.redhat.com/en/software/containers/rhoai/rhai-cli-rhel9/69a580e6a46d08df99bffe08?image=69a7dc1675d4eb16e91cb5de).
 
