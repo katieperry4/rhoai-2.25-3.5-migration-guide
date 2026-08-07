@@ -113,7 +113,9 @@ If you want to continue using Kueue with an externally managed Red Hat build of 
 **Verification**
 
 1. Run the migration assessment script as described in [Run the migration assessment script](#1.4.-run-the-migration-assessment-script).  
-2. Verify that Kueue is not listed as a prohibited or critical component.
+2. Verify that Kueue has no critical findings. Kueue data-integrity findings are reported as advisory warnings — review these and resolve any inconsistencies before proceeding.
+3. If migrating to Unmanaged (RHBOK), verify that the assessment confirms the Red Hat build of Kueue Operator is installed.
+4. If the assessment warns about a LocalQueue named `default`, rename your default queues to custom names (for example, `rhoai-kueue-default`) before proceeding. See the queue naming guidance in step 4 below.
 
 ***Kueue \- Before upgrade***
 
@@ -186,6 +188,51 @@ If you want to continue using Kueue with an externally managed Red Hat build of 
 
    *Important*  
    *Do not follow the Next steps section in the Operator migration guide. Return to this procedure after completing the Operator migration steps.*
+
+   *Note*  
+   *When you activate the Red Hat build of Kueue Operator in the DataScienceCluster resource, define custom names for your local queues and cluster queues instead of using the name `default`. The Red Hat build of Kueue treats the name `default` as a system identifier for enabled frameworks. When Kueue transitions to Unmanaged, workloads in kueue-managed namespaces that are not explicitly assigned to a queue are implicitly placed on the LocalQueue named `default`. If that name is already in use for other purposes, workloads can be scheduled to unintended queues.*
+
+   *Using custom queue names (for example, `rhoai-kueue-default` or `my-project-default`) avoids potential conflicts and ensures correct resource allocation across frameworks.*
+
+   *To use predefined queue names, apply the following configuration:*
+
+   ```yaml
+   spec:
+     components:
+       kueue:
+         managementState: Unmanaged
+   ```
+
+   *To specify custom queue names (recommended), apply the following configuration:*
+
+   ```yaml
+   spec:
+     components:
+       kueue:
+         managementState: Unmanaged
+         defaultClusterQueueName: <example-cluster-queue>
+         defaultLocalQueueName: <example-local-queue>
+   ```
+
+5. *Enable Kueue management for existing projects using Kueue by applying the `kueue.openshift.io/managed=true` label to each project namespace:*
+
+   ```bash
+   oc label namespace <project-namespace> kueue.openshift.io/managed=true --overwrite
+   ```
+
+   *Warning*  
+   *Kueue validation and queue enforcement apply only to workloads in namespaces labeled with `kueue.openshift.io/managed=true`.*
+
+   *After you apply this label, ensure that the following resources within that namespace have the `kueue.x-k8s.io/queue-name` annotation set to the relevant Kueue queue name:*
+
+   * *pytorchjob*
+   * *notebook*
+   * *rayjob*
+   * *raycluster*
+   * *inferenceservice*
+   * *llminferenceservice*
+
+   *If this annotation is missing in a managed namespace, any subsequent modification or creation of these resources will be rejected by the admission controller.*
 
 *Verification*
 
