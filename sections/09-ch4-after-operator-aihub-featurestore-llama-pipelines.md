@@ -354,32 +354,38 @@ After upgrading to OpenShift AI 3.5, confirm that the AI Pipelines platform is h
 
 * You have access to the **rhai-cli** tool, as described in [Deploy the rhai-cli container image](#1.3-deploy-a-persistent-pod-on-your-cluster-that-includes-the-the-rhai-cli-container-image).
 
+* You ran `rhai-cli migrate prepare --migration ai-pipelines.pre-upgrade-check` before upgrading, as described in [AI Pipelines - Before upgrade](#2.4.-ai-pipelines---before-upgrade).
+
 ###  **4.5.1. Administrator tasks** {#4.5.1.-administrator-tasks}
 
 **Procedure**
 
-1. As a cluster administrator, run the AI Pipelines post-upgrade check action:
+1. Verify that the pre-upgrade state file exists:
 
    ```bash
-   $ rhai-cli migrate run --migration ai-pipelines.post-upgrade-check --target-version 3.5.0
+   $ ls -la /tmp/rhoai-upgrade-backup/ai_pipelines/dspa_pre_upgrade_pods.json
    ```
 
-   **Important**
-
-   This command compares post-upgrade pod state against a baseline saved by the `ai-pipelines.pre-upgrade-check` migration during [AI Pipelines - Before upgrade](#2.4.-ai-pipelines---before-upgrade). The baseline file is stored at `/tmp/rhoai-upgrade-backup/ai_pipelines/dspa_pre_upgrade_pods.json` inside the **rhai-cli** container. If the **rhai-cli** pod restarted during the upgrade, this file may have been lost. To avoid this, ensure the backup directory is on the persistent volume (PVC) mounted to the pod, or copy the state file off the pod before starting the upgrade.
-
-   If the pre-upgrade state file is not available, you can skip this automated check and manually verify DSPA health:
+   If the file does not exist, the `migrate prepare` step in [AI Pipelines - Before upgrade](#2.4.-ai-pipelines---before-upgrade) was not run before the upgrade. In this case, skip the automated comparison in step 2 and manually verify DSPA health:
 
    ```bash
    $ oc get dspa -A
    $ oc get pods -n <dspa-namespace> | grep ds-pipeline
    ```
 
-   Confirm that all pipeline server pods are **Running** with all containers ready.
+   Confirm that all pipeline server pods are **Running** with all containers ready, then skip to step 3.
 
-2. Confirm that the output indicates that all AI Pipelines server pods are healthy or in the same state as before the upgrade.
+2. Run the AI Pipelines post-upgrade check action:
 
-3. Notify pipeline users that the upgrade is complete.
+   ```bash
+   $ rhai-cli migrate run --migration ai-pipelines.post-upgrade-check --target-version 3.5.0
+   ```
+
+   This command compares post-upgrade pod state against the baseline saved by `migrate prepare` during [AI Pipelines - Before upgrade](#2.4.-ai-pipelines---before-upgrade).
+
+3. Confirm that the output indicates that all AI Pipelines server pods are healthy or in the same state as before the upgrade.
+
+4. Notify pipeline users that the upgrade is complete.
 
 ###  **4.5.2. Pipeline user tasks** {#4.5.2.-pipeline-user-tasks}
 

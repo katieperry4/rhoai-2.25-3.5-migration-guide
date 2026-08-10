@@ -297,7 +297,7 @@ To prepare for the migration of OpenShift AI 2.25.9 (and later) to 3.5,  deploy 
 
 * As part of the pod configuration, specify the rhai-cli container image.
 
-  The container image is available at quay.io/rhoai/odh-cli-rhel9@sha256:35f6e580b86d3be86df0d1ff0df2d8a66544fe688ffeac267626b17c9cc6b6e3.
+  The container image is available at quay.io/rhoai/odh-cli-rhel9@sha256:3ca875996a1f9ea608550b2e8db2448e4faa194b704f1c7326f5767370d386fc.
 
   This image contains the Red Hat AI command line interface(**rhai-cli)** utility that includes the migration assessment linting CLI and migration actions to assist with pre-upgrade and post-upgrade steps for the Model Serving, Workbenches, TrustyAI, Llama Stack / OGX, AI Pipelines, and Ray Training Operator components.
 
@@ -342,7 +342,7 @@ To prepare for the migration of OpenShift AI 2.25.9 (and later) to 3.5,  deploy 
        spec:
          containers:
            - name: rhai-cli
-             image: quay.io/rhoai/odh-cli-rhel9@sha256:35f6e580b86d3be86df0d1ff0df2d8a66544fe688ffeac267626b17c9cc6b6e3
+             image: quay.io/rhoai/odh-cli-rhel9@sha256:3ca875996a1f9ea608550b2e8db2448e4faa194b704f1c7326f5767370d386fc
              command:
                - sleep
                - infinity
@@ -421,7 +421,19 @@ Authentication for the cluster is handled when you log in from inside the pod. T
 
 **Verification**
 
-* You successfully logged in to OpenShift from within the rhai-cli-0 pod.
+1. You successfully logged in to OpenShift from within the rhai-cli-0 pod.
+
+2. Verify the rhai-cli version:
+
+   ```bash
+   $ /opt/rhai-cli/bin/rhai-cli version
+   ```
+
+   Expected output:
+
+   ```
+   rhai-cli version: v1.26.4
+   ```
 
 **Next steps**
 
@@ -429,7 +441,7 @@ Authentication for the cluster is handled when you log in from inside the pod. T
 
 ### **1.3.2. About the rhai-cli container image** {#1.3.2.-about-the-rhai-cli-container-image}
 
-The container image is available at **quay.io/rhoai/odh-cli-rhel9@sha256:35f6e580b86d3be86df0d1ff0df2d8a66544fe688ffeac267626b17c9cc6b6e3**. It contains the migration assessment linting CLI and migration actions for specific component migrations.
+The container image is available at **quay.io/rhoai/odh-cli-rhel9@sha256:3ca875996a1f9ea608550b2e8db2448e4faa194b704f1c7326f5767370d386fc**. It contains the migration assessment linting CLI and migration actions for specific component migrations.
 
 For details about the container image, including versions, see the [**rhoai/rhai-cli-rhel9** page in the Red Hat Ecosystem Catalog](https://catalog.redhat.com/en/software/containers/rhoai/rhai-cli-rhel9/69a580e6a46d08df99bffe08?image=69a7dc1675d4eb16e91cb5de).
 
@@ -1234,32 +1246,44 @@ However, the upgrade includes updates to API versions and RBAC permissions. Befo
 
 **Procedure**
 
-1. Run the AI Pipelines pre-upgrade check to detect deprecated resources and RBAC issues:
+1. Capture the pre-upgrade DSPA pod health baseline:
+
+   ```bash
+   $ rhai-cli migrate prepare --migration ai-pipelines.pre-upgrade-check --target-version 3.5.0
+   ```
+
+   To preview without making changes, add `--dry-run`.
+
+   This saves a snapshot of DSPA pod health to `/tmp/rhoai-upgrade-backup/ai_pipelines/dspa_pre_upgrade_pods.json`. The post-upgrade check in [AI Pipelines - After upgrade](#4.5.-ai-pipelines---after-upgrade) compares against this baseline.
+
+   **Important**
+
+   This state file must persist across the upgrade. It is stored on the PVC mounted at `/tmp/rhoai-upgrade-backup` in the **rhai-cli** pod. Ensure that you do not delete the PVC or the **rhai-cli** StatefulSet before the post-upgrade check completes.
+
+2. Run the AI Pipelines pre-upgrade check to remediate deprecated resources:
 
    ```bash
    $ rhai-cli migrate run --migration ai-pipelines.pre-upgrade-check --target-version 3.5.0
    ```
 
-   To preview without making changes, add `--dry-run`.
-
-2. Review the output.  
+3. Review the output.  
    The action might report:
 
    * Deprecated **DataSciencePipelinesApplication** resources that use the **v1alpha1** API.
 
    * Custom RBAC roles that require updates.
 
-3. If the action reports issues, follow the remediation guidance provided. 
+4. If the action reports issues, follow the remediation guidance provided. 
 
    If the action indicates that it did not find any issues, skip the remaining steps in this procedure and continue to the next section. 
 
-4. If the action reports custom RBAC roles that require updates, consult with the teams that use AI Pipelines and run the DSP role update action:
+5. If the action reports custom RBAC roles that require updates, consult with the teams that use AI Pipelines and run the DSP role update action:
 
    ```bash
    $ rhai-cli migrate run --migration ai-pipelines.update-dsp-role --target-version 3.5.0
    ```
 
-5. After completing remediation, rerun the pre-upgrade check to confirm that no issues remain:
+6. After completing remediation, rerun the pre-upgrade check to confirm that no issues remain:
 
    ```bash
    $ rhai-cli migrate run --migration ai-pipelines.pre-upgrade-check --target-version 3.5.0
@@ -1273,6 +1297,12 @@ However, the upgrade includes updates to API versions and RBAC permissions. Befo
 * The `ai-pipelines.pre-upgrade-check` action reports no remaining issues.
 
 * Any required RBAC updates have been applied.
+
+* The pre-upgrade state file exists:
+
+  ```bash
+  $ ls -la /tmp/rhoai-upgrade-backup/ai_pipelines/dspa_pre_upgrade_pods.json
+  ```
 
 ## 
 
@@ -3129,6 +3159,13 @@ If you have bookmarked dashboard URLs, you must recreate redirects **after** the
 
 * You have configured Model Serving to ignore hardware profile annotations to avoid inference service restarts during the upgrade, according to Update the inferenceservice-config ConfigMap.
 
+* You have set the **CodeFlare** component to **Removed** in the DataScienceCluster resource. CodeFlare is removed in OpenShift AI 3.5 and must be disabled before upgrading, even if you have no RayClusters. If you completed the Ray pre-upgrade migration (Section 2.7), this was done automatically. Otherwise, run:
+
+  ```bash
+  $ oc patch dsc default-dsc --type=merge \
+    -p '{"spec":{"components":{"codeflare":{"managementState":"Removed"}}}}'
+  ```
+
 * You migrated any other component workloads that require migration before the upgrade.
 
 * You have OpenShift cluster administrator permissions to install Operators and edit **DataScienceCluster** and **DataScienceClusterInitialization** resources.
@@ -3293,6 +3330,12 @@ After preparing your cluster and changing the subscription channel, you must man
      --type=merge -p '{"spec":{"image":"<target-fbc-fragment-image>"}}'
    ```
 
+   Delete the catalog pod to force OLM to rebuild its cache. Without this step, OLM may serve stale channel data even after the CatalogSource reports READY:
+
+   ```bash
+   $ oc delete pod -n openshift-marketplace -l olm.catalogSource=<catalog-name>
+   ```
+
    Wait for the CatalogSource to reach **READY** state:
 
    ```bash
@@ -3300,11 +3343,13 @@ After preparing your cluster and changing the subscription channel, you must man
      -o jsonpath='{.status.connectionState.lastObservedState}'
    ```
 
-   Verify that the **support-required-upgrade-3.5** channel is now available:
+   Verify that the **support-required-upgrade-3.5** channel is now available. If your cluster also has the default **redhat-operators** CatalogSource, you must query the packagemanifest from your custom FBC CatalogSource specifically, because `oc get packagemanifest` may return data from **redhat-operators** by default:
 
    ```bash
-   $ oc get packagemanifest rhods-operator -n openshift-marketplace \
-     -o jsonpath='{.status.channels[*].name}' | tr ' ' '\n' | grep support
+   $ oc get packagemanifest -n openshift-marketplace -o json | \
+       jq -r '.items[] | select(.metadata.name == "rhods-operator" and
+       .status.catalogSource == "<catalog-name>") |
+       .status.channels[].name' | grep support
    ```
 
    If you installed Red Hat OpenShift AI from the default **redhat-operators** CatalogSource, skip this step.
@@ -3689,32 +3734,38 @@ After upgrading to OpenShift AI 3.5, confirm that the AI Pipelines platform is h
 
 * You have access to the **rhai-cli** tool, as described in [Deploy the rhai-cli container image](#1.3-deploy-a-persistent-pod-on-your-cluster-that-includes-the-the-rhai-cli-container-image).
 
+* You ran `rhai-cli migrate prepare --migration ai-pipelines.pre-upgrade-check` before upgrading, as described in [AI Pipelines - Before upgrade](#2.4.-ai-pipelines---before-upgrade).
+
 ###  **4.5.1. Administrator tasks** {#4.5.1.-administrator-tasks}
 
 **Procedure**
 
-1. As a cluster administrator, run the AI Pipelines post-upgrade check action:
+1. Verify that the pre-upgrade state file exists:
 
    ```bash
-   $ rhai-cli migrate run --migration ai-pipelines.post-upgrade-check --target-version 3.5.0
+   $ ls -la /tmp/rhoai-upgrade-backup/ai_pipelines/dspa_pre_upgrade_pods.json
    ```
 
-   **Important**
-
-   This command compares post-upgrade pod state against a baseline saved by the `ai-pipelines.pre-upgrade-check` migration during [AI Pipelines - Before upgrade](#2.4.-ai-pipelines---before-upgrade). The baseline file is stored at `/tmp/rhoai-upgrade-backup/ai_pipelines/dspa_pre_upgrade_pods.json` inside the **rhai-cli** container. If the **rhai-cli** pod restarted during the upgrade, this file may have been lost. To avoid this, ensure the backup directory is on the persistent volume (PVC) mounted to the pod, or copy the state file off the pod before starting the upgrade.
-
-   If the pre-upgrade state file is not available, you can skip this automated check and manually verify DSPA health:
+   If the file does not exist, the `migrate prepare` step in [AI Pipelines - Before upgrade](#2.4.-ai-pipelines---before-upgrade) was not run before the upgrade. In this case, skip the automated comparison in step 2 and manually verify DSPA health:
 
    ```bash
    $ oc get dspa -A
    $ oc get pods -n <dspa-namespace> | grep ds-pipeline
    ```
 
-   Confirm that all pipeline server pods are **Running** with all containers ready.
+   Confirm that all pipeline server pods are **Running** with all containers ready, then skip to step 3.
 
-2. Confirm that the output indicates that all AI Pipelines server pods are healthy or in the same state as before the upgrade.
+2. Run the AI Pipelines post-upgrade check action:
 
-3. Notify pipeline users that the upgrade is complete.
+   ```bash
+   $ rhai-cli migrate run --migration ai-pipelines.post-upgrade-check --target-version 3.5.0
+   ```
+
+   This command compares post-upgrade pod state against the baseline saved by `migrate prepare` during [AI Pipelines - Before upgrade](#2.4.-ai-pipelines---before-upgrade).
+
+3. Confirm that the output indicates that all AI Pipelines server pods are healthy or in the same state as before the upgrade.
+
+4. Notify pipeline users that the upgrade is complete.
 
 ###  **4.5.2. Pipeline user tasks** {#4.5.2.-pipeline-user-tasks}
 

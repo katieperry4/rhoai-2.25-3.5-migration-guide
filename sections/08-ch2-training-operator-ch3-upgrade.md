@@ -53,6 +53,13 @@ If you have bookmarked dashboard URLs, you must recreate redirects **after** the
 
 * You have configured Model Serving to ignore hardware profile annotations to avoid inference service restarts during the upgrade, according to Update the inferenceservice-config ConfigMap.
 
+* You have set the **CodeFlare** component to **Removed** in the DataScienceCluster resource. CodeFlare is removed in OpenShift AI 3.5 and must be disabled before upgrading, even if you have no RayClusters. If you completed the Ray pre-upgrade migration (Section 2.7), this was done automatically. Otherwise, run:
+
+  ```bash
+  $ oc patch dsc default-dsc --type=merge \
+    -p '{"spec":{"components":{"codeflare":{"managementState":"Removed"}}}}'
+  ```
+
 * You migrated any other component workloads that require migration before the upgrade.
 
 * You have OpenShift cluster administrator permissions to install Operators and edit **DataScienceCluster** and **DataScienceClusterInitialization** resources.
@@ -217,6 +224,12 @@ After preparing your cluster and changing the subscription channel, you must man
      --type=merge -p '{"spec":{"image":"<target-fbc-fragment-image>"}}'
    ```
 
+   Delete the catalog pod to force OLM to rebuild its cache. Without this step, OLM may serve stale channel data even after the CatalogSource reports READY:
+
+   ```bash
+   $ oc delete pod -n openshift-marketplace -l olm.catalogSource=<catalog-name>
+   ```
+
    Wait for the CatalogSource to reach **READY** state:
 
    ```bash
@@ -224,11 +237,13 @@ After preparing your cluster and changing the subscription channel, you must man
      -o jsonpath='{.status.connectionState.lastObservedState}'
    ```
 
-   Verify that the **support-required-upgrade-3.5** channel is now available:
+   Verify that the **support-required-upgrade-3.5** channel is now available. If your cluster also has the default **redhat-operators** CatalogSource, you must query the packagemanifest from your custom FBC CatalogSource specifically, because `oc get packagemanifest` may return data from **redhat-operators** by default:
 
    ```bash
-   $ oc get packagemanifest rhods-operator -n openshift-marketplace \
-     -o jsonpath='{.status.channels[*].name}' | tr ' ' '\n' | grep support
+   $ oc get packagemanifest -n openshift-marketplace -o json | \
+       jq -r '.items[] | select(.metadata.name == "rhods-operator" and
+       .status.catalogSource == "<catalog-name>") |
+       .status.channels[].name' | grep support
    ```
 
    If you installed Red Hat OpenShift AI from the default **redhat-operators** CatalogSource, skip this step.

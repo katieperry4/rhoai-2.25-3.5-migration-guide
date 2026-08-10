@@ -244,7 +244,19 @@ Authentication for the cluster is handled when you log in from inside the pod. T
 
 **Verification**
 
-* You successfully logged in to OpenShift from within the rhai-cli-0 pod.
+1. You successfully logged in to OpenShift from within the rhai-cli-0 pod.
+
+2. Verify the rhai-cli version:
+
+   ```bash
+   $ /opt/rhai-cli/bin/rhai-cli version
+   ```
+
+   Expected output:
+
+   ```
+   rhai-cli version: v1.26.4
+   ```
 
 **Next steps**
 

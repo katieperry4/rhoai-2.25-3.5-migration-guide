@@ -12,32 +12,44 @@ However, the upgrade includes updates to API versions and RBAC permissions. Befo
 
 **Procedure**
 
-1. Run the AI Pipelines pre-upgrade check to detect deprecated resources and RBAC issues:
+1. Capture the pre-upgrade DSPA pod health baseline:
+
+   ```bash
+   $ rhai-cli migrate prepare --migration ai-pipelines.pre-upgrade-check --target-version 3.5.0
+   ```
+
+   To preview without making changes, add `--dry-run`.
+
+   This saves a snapshot of DSPA pod health to `/tmp/rhoai-upgrade-backup/ai_pipelines/dspa_pre_upgrade_pods.json`. The post-upgrade check in [AI Pipelines - After upgrade](#4.5.-ai-pipelines---after-upgrade) compares against this baseline.
+
+   **Important**
+
+   This state file must persist across the upgrade. It is stored on the PVC mounted at `/tmp/rhoai-upgrade-backup` in the **rhai-cli** pod. Ensure that you do not delete the PVC or the **rhai-cli** StatefulSet before the post-upgrade check completes.
+
+2. Run the AI Pipelines pre-upgrade check to remediate deprecated resources:
 
    ```bash
    $ rhai-cli migrate run --migration ai-pipelines.pre-upgrade-check --target-version 3.5.0
    ```
 
-   To preview without making changes, add `--dry-run`.
-
-2. Review the output.  
+3. Review the output.  
    The action might report:
 
    * Deprecated **DataSciencePipelinesApplication** resources that use the **v1alpha1** API.
 
    * Custom RBAC roles that require updates.
 
-3. If the action reports issues, follow the remediation guidance provided. 
+4. If the action reports issues, follow the remediation guidance provided. 
 
    If the action indicates that it did not find any issues, skip the remaining steps in this procedure and continue to the next section. 
 
-4. If the action reports custom RBAC roles that require updates, consult with the teams that use AI Pipelines and run the DSP role update action:
+5. If the action reports custom RBAC roles that require updates, consult with the teams that use AI Pipelines and run the DSP role update action:
 
    ```bash
    $ rhai-cli migrate run --migration ai-pipelines.update-dsp-role --target-version 3.5.0
    ```
 
-5. After completing remediation, rerun the pre-upgrade check to confirm that no issues remain:
+6. After completing remediation, rerun the pre-upgrade check to confirm that no issues remain:
 
    ```bash
    $ rhai-cli migrate run --migration ai-pipelines.pre-upgrade-check --target-version 3.5.0
@@ -51,6 +63,12 @@ However, the upgrade includes updates to API versions and RBAC permissions. Befo
 * The `ai-pipelines.pre-upgrade-check` action reports no remaining issues.
 
 * Any required RBAC updates have been applied.
+
+* The pre-upgrade state file exists:
+
+  ```bash
+  $ ls -la /tmp/rhoai-upgrade-backup/ai_pipelines/dspa_pre_upgrade_pods.json
+  ```
 
 ## 
 
