@@ -1,4 +1,4 @@
-# **Migrate from OpenShift AI 2.25.9  (and later) to 3.5 (latest)** 
+# **Migrate from OpenShift AI 2.25.9  (and later) to 3.5 (latest) DRAFT** 
 
 #### **Migrate from Red Hat OpenShift AI 2.25.9 (and later) to OpenShift AI 3.5 (latest)**  
 

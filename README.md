@@ -1,5 +1,15 @@
 # RHOAI 2.25 to 3.5 Migration Guide
 
+> [!WARNING]
+> # ⚠️ DRAFT — WORK IN PROGRESS — NOT FOR CUSTOMER USE
+>
+> **This document is an unfinished internal draft. Do not share it with customers, and do not use it to perform a migration.**
+>
+> **OpenShift AI 3.5 has not been released.** The current release of Red Hat OpenShift AI is **3.4**. Everything in this repository describes a future version and is subject to change without notice.
+>
+> **For a real 2.25 migration, use the official Red Hat documentation instead:**
+> **[Migrating from Red Hat OpenShift AI 2.25 (access.redhat.com)](https://access.redhat.com/articles/7133758?extIdCarryOver=true&sc_cid=RHCTG0180000382538)**
+
 Migration guide for Red Hat OpenShift AI EUS-to-EUS upgrade (2.25.9 to 3.5).
 
 This guide provides step-by-step instructions for cluster administrators performing an in-place or side-by-side migration from OpenShift AI 2.25.9 (and later) to 3.5, covering all components: Model Serving, Workbenches, TrustyAI, OGX (formerly Llama Stack), AI Pipelines, Ray Training Operator, and Kubeflow Training Operator.
