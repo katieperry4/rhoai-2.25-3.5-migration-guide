@@ -1,0 +1,75 @@
+name: Publish migration guide
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deployments race; the newest push wins.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  # Pinned so CI renders identically to a local `make html`. apt's pandoc
+  # lags several minor versions behind and drifts between runner images.
+  PANDOC_VERSION: "3.10.1"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # skopeo resolves the container image digests injected into the guide.
+      # All images live on public quay.io, so no registry credentials needed.
+      - name: Install skopeo
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends skopeo
+
+      - name: Install pandoc ${{ env.PANDOC_VERSION }}
+        run: |
+          curl -fsSL -o /tmp/pandoc.deb \
+            "https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-1-amd64.deb"
+          sudo dpkg -i /tmp/pandoc.deb
+          pandoc --version | head -1
+
+      - name: Build document and render HTML
+        env:
+          SKOPEO_TIMEOUT: "60"
+        run: make html
+
+      # Guard against a silently broken render: the page must contain the
+      # draft notice and must not contain unresolved {{IMAGE}} placeholders.
+      - name: Verify rendered page
+        run: |
+          page=site/index.html
+          test -s "$page" || { echo "::error::$page is missing or empty"; exit 1; }
+          grep -q "NOT FOR CUSTOMER USE" "$page" \
+            || { echo "::error::draft notice missing from rendered page"; exit 1; }
+          if grep -qE '\{\{[A-Z_]+\}\}' "$page"; then
+            echo "::error::unresolved image placeholders in rendered page"
+            grep -oE '\{\{[A-Z_]+\}\}' "$page" | sort -u
+            exit 1
+          fi
+          echo "Rendered page OK ($(wc -c < "$page") bytes)"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

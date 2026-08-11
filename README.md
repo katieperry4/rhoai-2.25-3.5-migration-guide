@@ -50,11 +50,29 @@ SKIP_DIGESTS=1 make build
 
 This reuses the existing `images.env` file instead of calling `skopeo`.
 
-To remove generated output, staging, and images.env:
+To remove generated output, staging, site, and images.env:
 
 ```bash
 make clean
 ```
+
+### Render the HTML page
+
+```bash
+make html
+```
+
+This runs the full build, then renders `site/index.html` via `pandoc` (plus a copy
+of the Markdown and a `.nojekyll` marker). `site/` is gitignored.
+
+The `.github/workflows/pages.yml` workflow runs the same `make html` on every push
+to `main` (and on demand via **Actions → Publish migration guide → Run workflow**),
+then deploys `site/` to GitHub Pages. It requires **Settings → Pages → Source** to be
+set to **GitHub Actions**.
+
+Rendering uses pandoc's `markdown` reader rather than `gfm`, because the guide's
+headings carry explicit `{#id}` attributes that its hand-authored table of contents
+links to; the `gfm` reader does not honour them.
 
 ### Image digest management
 

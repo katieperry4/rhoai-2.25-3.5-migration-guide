@@ -1,6 +1,7 @@
 OUTPUT_DIR := output
 OUTPUT_FILE := $(OUTPUT_DIR)/Migrate from OpenShift AI 2.25 to 3.5.md
 STAGING_DIR := staging
+SITE_DIR := site
 
 SECTIONS := \
 	sections/01-toc-preface.md \
@@ -18,7 +19,7 @@ SECTIONS := \
 
 STAGED_SECTIONS := $(patsubst sections/%,$(STAGING_DIR)/%,$(SECTIONS))
 
-.PHONY: build build-offline resolve-digests inject-images clean
+.PHONY: build build-offline resolve-digests inject-images html clean
 
 ifdef SKIP_DIGESTS
 build: inject-images
@@ -40,12 +41,15 @@ inject-images: $(SECTIONS) images.env image-placeholders.conf | $(OUTPUT_DIR) $(
 		value=$$(grep "^$$key=" images.env | cut -d= -f2-); \
 		if [ -n "$$value" ]; then \
 			for f in $(STAGING_DIR)/*.md; do \
-				sed -i '' "s|$$placeholder|$$value|g" "$$f"; \
+				sed "s|$$placeholder|$$value|g" "$$f" > "$$f.tmp" && mv "$$f.tmp" "$$f"; \
 			done; \
 		fi; \
 	done < image-placeholders.conf
 	@cat $(STAGED_SECTIONS) > "$(OUTPUT_FILE)"
 	@echo "Built: $(OUTPUT_FILE) ($$(wc -l < "$(OUTPUT_FILE)") lines)"
+
+html: build
+	@./scripts/render-html.sh "$(OUTPUT_FILE)" "$(SITE_DIR)"
 
 images.env:
 	@echo "ERROR: images.env not found. Run 'make resolve-digests' first or 'make build' for full build." >&2
@@ -60,4 +64,5 @@ $(STAGING_DIR):
 clean:
 	rm -f "$(OUTPUT_FILE)"
 	rm -rf $(STAGING_DIR)
+	rm -rf $(SITE_DIR)
 	rm -f images.env
