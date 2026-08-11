@@ -38,6 +38,11 @@ All procedures in this section must be completed after upgrading the Red Hat Ope
    ```
 
    **Note**
+   You can safely ignore the following warning if it appears:  
+   `WARNING: migration workbenches.patch-auth-model has phase pre-upgrade but effective phase is post-upgrade`  
+   This is a known phase registration mismatch in rhai-cli. The migration runs correctly when invoked with `--migration`.
+
+   **Note**
 
    This command prompts for interactive confirmation twice: once before patching notebooks, and once before cleaning up legacy OAuth resources. Enter **y** at each prompt to proceed.
 

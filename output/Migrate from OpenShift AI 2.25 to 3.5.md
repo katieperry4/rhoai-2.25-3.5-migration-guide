@@ -1497,9 +1497,15 @@ For each namespace that has a TrustyAI service, follow these steps to backup sch
 
 2. Validate that the backup is not empty:
 
+   **Note**
+   Run this command from your workstation (not from inside the **rhai-cli** pod). It reads the backup file from the pod's PVC and validates it with `jq` locally.
+
    ```bash
-   $ jq empty ${BACKUP_DIR}/trustyai-metrics-${NS}-*.json && echo "OK" || echo "FAIL: invalid JSON"
+   $ oc exec rhai-cli-0 -n rhai-migration -- cat ${BACKUP_DIR}/trustyai-metrics-${NS}-*.json | jq empty && echo "OK" || echo "FAIL: invalid JSON"
    ```
+
+   **Note**
+   Replace `rhai-migration` with the namespace where your **rhai-cli** StatefulSet is deployed, if different.
 
    Example output:
 
@@ -1510,7 +1516,7 @@ For each namespace that has a TrustyAI service, follow these steps to backup sch
 3. Verify that the backup file exists:
 
    ```bash
-   $ ls ${BACKUP_DIR}/trustyai-metrics-${NS}-*
+   $ oc exec rhai-cli-0 -n rhai-migration -- ls ${BACKUP_DIR}/trustyai-metrics-${NS}-*
    ```
 
    Example output:
@@ -1548,10 +1554,14 @@ For each namespace that has a TrustyAI service, follow these steps to backup Tru
 2. Run the TrustyAI data backup action:
 
    ```bash
-   $ rhai-cli migrate prepare --migration trustyai.data --target-version 3.5.0
+   $ rhai-cli migrate prepare --migration trustyai.data --target-version 3.5.0 \
+       --output-dir /tmp/rhoai-upgrade-backup/trustyai
    ```
 
-   To preview without making changes, add `--dry-run`. To specify a custom backup directory, add `--output-dir /path/to/backups`.
+   To preview without making changes, add `--dry-run`.
+
+   **Important**
+   The `--output-dir` flag is required when running inside the **rhai-cli** pod. Without it, the action attempts to create a backup directory in the container's root filesystem, which is read-only, and fails with a `permission denied` error.
 
    Example output for PVC storage:
 
@@ -1923,7 +1933,25 @@ rules:
 
 **Procedure**
 
-1. Run a pre-upgrade check that verifies your configuration, verifies that the Ray clusters are ready for the upgrade, and backs up your Ray cluster CR configuration YAML files:  
+1. Set CodeFlare to **Removed** in the DataScienceCluster before running the Ray backup:
+
+   ```bash
+   $ oc patch datasciencecluster default-dsc --type merge \
+       -p '{"spec":{"components":{"codeflare":{"managementState":"Removed"}}}}'
+   ```
+
+   **Important**
+   The `raycluster.backup` action checks that CodeFlare is **Removed** as a precondition and fails if it is still **Managed**. You must remove CodeFlare before proceeding.
+
+   Verify:
+
+   ```bash
+   $ oc get datasciencecluster default-dsc -o jsonpath='{.spec.components.codeflare.managementState}' && echo
+   ```
+
+   Expected output: `Removed`
+
+2. Run a pre-upgrade check that verifies your configuration, verifies that the Ray clusters are ready for the upgrade, and backs up your Ray cluster CR configuration YAML files:  
    **Note**  
    The migration backs up your Ray cluster CR configuration YAML files only. It does not back up the state of your Ray clusters.  
    ```bash
@@ -1935,7 +1963,7 @@ rules:
 
    * **Rhoai-3.x** \- Your Ray cluster CR configurations YAML files that are compatible with OpenShift AI 3.x.
 
-2. Get a list of the Ray clusters and check their status:
+3. Get a list of the Ray clusters and check their status:
 
    ```bash
    $ rhai-cli migrate list --target-version 3.5.0
@@ -1974,12 +2002,10 @@ Running pre-upgrade checks...
   [OK] Permissions: All required permissions to perform the
        ray upgrade are available to this user.
   [OK] cert-manager: cert-manager CRD found
+  [OK] codeflare-operator: codeflare is Removed in DSC
   [OK] RayClusters: 2 RayCluster(s) on cluster.
 ------------------------------------------------------------
 All pre-upgrade checks passed.
-
-Pre-upgrade step: Setting codeflare to Removed in DataScienceCluster...
-  Set codeflare to Removed in DataScienceCluster 'default-dsc'.
 
 Backup files will be saved to: /tmp/rhoai-upgrade-backup/ray
 
@@ -3156,7 +3182,7 @@ If you have bookmarked dashboard URLs, you must recreate redirects **after** the
 
 * You have configured Model Serving to ignore hardware profile annotations to avoid inference service restarts during the upgrade, according to Update the inferenceservice-config ConfigMap.
 
-* You have set the **CodeFlare** component to **Removed** in the DataScienceCluster resource. CodeFlare is removed in OpenShift AI 3.5 and must be disabled before upgrading, even if you have no RayClusters. If you completed the Ray pre-upgrade migration (Section 2.7), this was done automatically. Otherwise, run:
+* You have set the **CodeFlare** component to **Removed** in the DataScienceCluster resource. CodeFlare is removed in OpenShift AI 3.5 and must be disabled before upgrading, even if you have no RayClusters. If you completed the Ray pre-upgrade migration (Section 2.7), you already performed this step. Otherwise, run:
 
   ```bash
   $ oc patch dsc default-dsc --type=merge \
@@ -4086,6 +4112,11 @@ After upgrading OpenShift AI to 3.5, check the status of the TrustyAI Guardrails
    **Note**  
    The rhai-cli action operates cluster-wide across all namespaces.
 
+   **Note**  
+   You can safely ignore the following warning if it appears:  
+   `WARNING: migration trustyai.migrate-gorch-otel-exporter has phase pre-upgrade but effective phase is post-upgrade`  
+   This is a known phase registration mismatch in rhai-cli. The migration runs correctly when invoked with `--migration`.
+
    Example output:
 
    ```
@@ -4541,6 +4572,11 @@ All procedures in this section must be completed after upgrading the Red Hat Ope
    ```bash
    $ rhai-cli migrate run --migration workbenches.patch-auth-model --target-version 3.5.0 --only-stopped --with-cleanup
    ```
+
+   **Note**
+   You can safely ignore the following warning if it appears:  
+   `WARNING: migration workbenches.patch-auth-model has phase pre-upgrade but effective phase is post-upgrade`  
+   This is a known phase registration mismatch in rhai-cli. The migration runs correctly when invoked with `--migration`.
 
    **Note**
 
@@ -5247,6 +5283,11 @@ The Kubeflow Training Operator (KFTO) v1 is deprecated starting with theOpenShif
    ```bash
    $ rhai-cli migrate run --migration training.verify-workloads --target-version 3.5.0
    ```
+
+   **Note**  
+   You can safely ignore the following warning if it appears:  
+   `WARNING: migration training.verify-workloads has phase pre-upgrade but effective phase is post-upgrade`  
+   This is a known phase registration mismatch in rhai-cli. The migration runs correctly when invoked with `--migration`.
 
    **Note**  
    If the training image is not cached, it can take about 7 minutes for the action to complete.

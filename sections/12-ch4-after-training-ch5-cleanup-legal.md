@@ -54,6 +54,11 @@ The Kubeflow Training Operator (KFTO) v1 is deprecated starting with theOpenShif
    ```
 
    **Note**  
+   You can safely ignore the following warning if it appears:  
+   `WARNING: migration training.verify-workloads has phase pre-upgrade but effective phase is post-upgrade`  
+   This is a known phase registration mismatch in rhai-cli. The migration runs correctly when invoked with `--migration`.
+
+   **Note**  
    If the training image is not cached, it can take about 7 minutes for the action to complete.
 
    The output should indicate that the KFTOv1 Operator works correctly. Any failures indicate that the KFTO upgrade failed.

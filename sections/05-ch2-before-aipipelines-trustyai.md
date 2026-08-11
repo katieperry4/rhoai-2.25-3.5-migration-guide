@@ -264,9 +264,15 @@ For each namespace that has a TrustyAI service, follow these steps to backup sch
 
 2. Validate that the backup is not empty:
 
+   **Note**
+   Run this command from your workstation (not from inside the **rhai-cli** pod). It reads the backup file from the pod's PVC and validates it with `jq` locally.
+
    ```bash
-   $ jq empty ${BACKUP_DIR}/trustyai-metrics-${NS}-*.json && echo "OK" || echo "FAIL: invalid JSON"
+   $ oc exec rhai-cli-0 -n rhai-migration -- cat ${BACKUP_DIR}/trustyai-metrics-${NS}-*.json | jq empty && echo "OK" || echo "FAIL: invalid JSON"
    ```
+
+   **Note**
+   Replace `rhai-migration` with the namespace where your **rhai-cli** StatefulSet is deployed, if different.
 
    Example output:
 
@@ -277,7 +283,7 @@ For each namespace that has a TrustyAI service, follow these steps to backup sch
 3. Verify that the backup file exists:
 
    ```bash
-   $ ls ${BACKUP_DIR}/trustyai-metrics-${NS}-*
+   $ oc exec rhai-cli-0 -n rhai-migration -- ls ${BACKUP_DIR}/trustyai-metrics-${NS}-*
    ```
 
    Example output:
@@ -315,10 +321,14 @@ For each namespace that has a TrustyAI service, follow these steps to backup Tru
 2. Run the TrustyAI data backup action:
 
    ```bash
-   $ rhai-cli migrate prepare --migration trustyai.data --target-version 3.5.0
+   $ rhai-cli migrate prepare --migration trustyai.data --target-version 3.5.0 \
+       --output-dir /tmp/rhoai-upgrade-backup/trustyai
    ```
 
-   To preview without making changes, add `--dry-run`. To specify a custom backup directory, add `--output-dir /path/to/backups`.
+   To preview without making changes, add `--dry-run`.
+
+   **Important**
+   The `--output-dir` flag is required when running inside the **rhai-cli** pod. Without it, the action attempts to create a backup directory in the container's root filesystem, which is read-only, and fails with a `permission denied` error.
 
    Example output for PVC storage:
 

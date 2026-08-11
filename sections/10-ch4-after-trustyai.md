@@ -193,6 +193,11 @@ After upgrading OpenShift AI to 3.5, check the status of the TrustyAI Guardrails
    **Note**  
    The rhai-cli action operates cluster-wide across all namespaces.
 
+   **Note**  
+   You can safely ignore the following warning if it appears:  
+   `WARNING: migration trustyai.migrate-gorch-otel-exporter has phase pre-upgrade but effective phase is post-upgrade`  
+   This is a known phase registration mismatch in rhai-cli. The migration runs correctly when invoked with `--migration`.
+
    Example output:
 
    ```

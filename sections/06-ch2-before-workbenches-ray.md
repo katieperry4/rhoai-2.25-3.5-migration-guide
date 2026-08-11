@@ -213,7 +213,25 @@ rules:
 
 **Procedure**
 
-1. Run a pre-upgrade check that verifies your configuration, verifies that the Ray clusters are ready for the upgrade, and backs up your Ray cluster CR configuration YAML files:  
+1. Set CodeFlare to **Removed** in the DataScienceCluster before running the Ray backup:
+
+   ```bash
+   $ oc patch datasciencecluster default-dsc --type merge \
+       -p '{"spec":{"components":{"codeflare":{"managementState":"Removed"}}}}'
+   ```
+
+   **Important**
+   The `raycluster.backup` action checks that CodeFlare is **Removed** as a precondition and fails if it is still **Managed**. You must remove CodeFlare before proceeding.
+
+   Verify:
+
+   ```bash
+   $ oc get datasciencecluster default-dsc -o jsonpath='{.spec.components.codeflare.managementState}' && echo
+   ```
+
+   Expected output: `Removed`
+
+2. Run a pre-upgrade check that verifies your configuration, verifies that the Ray clusters are ready for the upgrade, and backs up your Ray cluster CR configuration YAML files:  
    **Note**  
    The migration backs up your Ray cluster CR configuration YAML files only. It does not back up the state of your Ray clusters.  
    ```bash
@@ -225,7 +243,7 @@ rules:
 
    * **Rhoai-3.x** \- Your Ray cluster CR configurations YAML files that are compatible with OpenShift AI 3.x.
 
-2. Get a list of the Ray clusters and check their status:
+3. Get a list of the Ray clusters and check their status:
 
    ```bash
    $ rhai-cli migrate list --target-version 3.5.0
@@ -264,12 +282,10 @@ Running pre-upgrade checks...
   [OK] Permissions: All required permissions to perform the
        ray upgrade are available to this user.
   [OK] cert-manager: cert-manager CRD found
+  [OK] codeflare-operator: codeflare is Removed in DSC
   [OK] RayClusters: 2 RayCluster(s) on cluster.
 ------------------------------------------------------------
 All pre-upgrade checks passed.
-
-Pre-upgrade step: Setting codeflare to Removed in DataScienceCluster...
-  Set codeflare to Removed in DataScienceCluster 'default-dsc'.
 
 Backup files will be saved to: /tmp/rhoai-upgrade-backup/ray
 

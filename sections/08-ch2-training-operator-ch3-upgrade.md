@@ -53,7 +53,7 @@ If you have bookmarked dashboard URLs, you must recreate redirects **after** the
 
 * You have configured Model Serving to ignore hardware profile annotations to avoid inference service restarts during the upgrade, according to Update the inferenceservice-config ConfigMap.
 
-* You have set the **CodeFlare** component to **Removed** in the DataScienceCluster resource. CodeFlare is removed in OpenShift AI 3.5 and must be disabled before upgrading, even if you have no RayClusters. If you completed the Ray pre-upgrade migration (Section 2.7), this was done automatically. Otherwise, run:
+* You have set the **CodeFlare** component to **Removed** in the DataScienceCluster resource. CodeFlare is removed in OpenShift AI 3.5 and must be disabled before upgrading, even if you have no RayClusters. If you completed the Ray pre-upgrade migration (Section 2.7), you already performed this step. Otherwise, run:
 
   ```bash
   $ oc patch dsc default-dsc --type=merge \
