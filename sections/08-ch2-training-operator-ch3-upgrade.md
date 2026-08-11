@@ -264,11 +264,104 @@ After preparing your cluster and changing the subscription channel, you must man
 
 11. Approve the install plan to begin the upgrade.
 
-1. In the **Upgrade status** section, click the "requires approval" link to approve the upgrade installation.  
-2. Review the upgrade install plan details and click **Approve**. The upgrade process begins.
+   1. In the **Upgrade status** section, click the "requires approval" link to approve the upgrade installation.  
+   2. Review the upgrade install plan details and click **Approve**. The upgrade process begins.
 
 12. While the upgrade is in progress, monitor the following:
 
-1. Watch the operator pods as they restart to replace the version 2.25.9 (and later) Operator.  
-2. Verify that the new operator pods reach the **Running** state and that the **Ready** condition is **True**.
+   1. Watch the operator pods as they restart to replace the version 2.25.9 (and later) Operator.  
+   2. Verify that the new operator pods reach the **Running** state and that the **Ready** condition is **True**.
+
+13. Install the **JobSet** operator. OpenShift AI 3.5 requires the JobSet operator as a Kueue dependency. Without it, the **DataScienceCluster** remains in a **Not Ready** state with `KueueReady=False`.
+
+   **Important**  
+   The JobSet operator only supports **OwnNamespace** and **SingleNamespace** install modes. Do not install it in the `openshift-operators` namespace, which uses an **AllNamespaces** OperatorGroup.
+
+   1. Create a dedicated namespace:
+
+      ```bash
+      $ oc create namespace jobset-system
+      ```
+
+   2. Create an **OwnNamespace** OperatorGroup:
+
+      ```bash
+      $ oc apply -f - <<'EOF'
+      apiVersion: operators.coreos.com/v1
+      kind: OperatorGroup
+      metadata:
+        name: jobset-operator-group
+        namespace: jobset-system
+      spec:
+        targetNamespaces:
+          - jobset-system
+      EOF
+      ```
+
+   3. Subscribe to the operator:
+
+      ```bash
+      $ oc apply -f - <<'EOF'
+      apiVersion: operators.coreos.com/v1alpha1
+      kind: Subscription
+      metadata:
+        name: job-set
+        namespace: jobset-system
+      spec:
+        channel: stable-v1.0
+        installPlanApproval: Automatic
+        name: job-set
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace
+      EOF
+      ```
+
+   4. Wait for the CSV to reach **Succeeded**:
+
+      ```bash
+      $ oc wait csv jobset-operator.v1.0.0 -n jobset-system \
+        --for=jsonpath='{.status.phase}'=Succeeded --timeout=120s
+      ```
+
+      **Tip**  
+      If the CSV name differs from `jobset-operator.v1.0.0`, verify it with `oc get csv -n jobset-system`.
+
+   5. Create the **JobSetOperator** custom resource to deploy the operand. This installs the `jobsets.jobset.x-k8s.io` CRD that Kueue requires:
+
+      ```bash
+      $ oc apply -f - <<'EOF'
+      apiVersion: operator.openshift.io/v1
+      kind: JobSetOperator
+      metadata:
+        name: cluster
+      spec:
+        managementState: Managed
+        logLevel: Normal
+        operatorLogLevel: Normal
+      EOF
+      ```
+
+   6. Verify that the CRD exists and KueueReady is True:
+
+      ```bash
+      $ oc get crd jobsets.jobset.x-k8s.io
+      $ oc get dsc -o jsonpath='{.items[0].status.conditions[?(@.type=="KueueReady")].status}' && echo
+      ```
+
+      Expected output: the CRD is listed and KueueReady shows **True**.
+
+14. Verify that the rhai-cli pod has cluster access for post-upgrade commands. The service account ClusterRoleBinding may need to be re-applied after the upgrade:
+
+   ```bash
+   $ oc auth can-i list csv -A --as=system:serviceaccount:rhai-migration:default
+   ```
+
+   If the output is **no**, restore the ClusterRoleBinding:
+
+   ```bash
+   $ oc adm policy add-cluster-role-to-user cluster-admin -z default -n rhai-migration
+   ```
+
+   **Note**  
+   Replace `rhai-migration` with the namespace where your rhai-cli pod is deployed. This binding is required for all post-upgrade rhai-cli commands in Chapter 4.
 

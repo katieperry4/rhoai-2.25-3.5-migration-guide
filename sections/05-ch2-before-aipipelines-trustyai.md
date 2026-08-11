@@ -119,15 +119,13 @@ Verify that the management state of the TrustyAI component for your Data Science
 
    If the output is empty, **Removed**, or **Unmanaged**, you do not need to perform any steps for the TrustyAI component before you upgrade to OpenShift AI 3.5.
 
-   
-
-3. Get a list of the namespaces that contain a TrustyAI service:
+2. Get a list of the namespaces that contain a TrustyAI service:
 
    ```bash
    $ oc get trustyaiservice -A
    ```
 
-4. Example output:
+   Example output:
 
    ```
    NAMESPACE                 NAME               AGE
@@ -137,7 +135,7 @@ Verify that the management state of the TrustyAI component for your Data Science
    **Note**  
    If the output is **No resources found**, there are no metrics or storage data to backup. Skip to TrustyAI \- Before upgrade \- Guardrails Orchestrator.
 
-5. Create a directory for backups:
+3. Create a directory for backups:
 
    ```bash
    $ mkdir -p /tmp/rhoai-upgrade-backup/trustyai

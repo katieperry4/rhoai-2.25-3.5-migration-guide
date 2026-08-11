@@ -297,7 +297,7 @@ To prepare for the migration of OpenShift AI 2.25.9 (and later) to 3.5,  deploy 
 
 * As part of the pod configuration, specify the rhai-cli container image.
 
-  The container image is available at quay.io/rhoai/odh-cli-rhel9@sha256:3ca875996a1f9ea608550b2e8db2448e4faa194b704f1c7326f5767370d386fc.
+  The container image is available at quay.io/rhoai/odh-cli-rhel9@sha256:f8111737b73673f53219057414dc7c9a9beaa76a78df0fd56e2c0e283f89f6ed.
 
   This image contains the Red Hat AI command line interface(**rhai-cli)** utility that includes the migration assessment linting CLI and migration actions to assist with pre-upgrade and post-upgrade steps for the Model Serving, Workbenches, TrustyAI, Llama Stack / OGX, AI Pipelines, and Ray Training Operator components.
 
@@ -342,7 +342,7 @@ To prepare for the migration of OpenShift AI 2.25.9 (and later) to 3.5,  deploy 
        spec:
          containers:
            - name: rhai-cli
-             image: quay.io/rhoai/odh-cli-rhel9@sha256:3ca875996a1f9ea608550b2e8db2448e4faa194b704f1c7326f5767370d386fc
+             image: quay.io/rhoai/odh-cli-rhel9@sha256:f8111737b73673f53219057414dc7c9a9beaa76a78df0fd56e2c0e283f89f6ed
              command:
                - sleep
                - infinity
@@ -441,7 +441,7 @@ Authentication for the cluster is handled when you log in from inside the pod. T
 
 ### **1.3.2. About the rhai-cli container image** {#1.3.2.-about-the-rhai-cli-container-image}
 
-The container image is available at **quay.io/rhoai/odh-cli-rhel9@sha256:3ca875996a1f9ea608550b2e8db2448e4faa194b704f1c7326f5767370d386fc**. It contains the migration assessment linting CLI and migration actions for specific component migrations.
+The container image is available at **quay.io/rhoai/odh-cli-rhel9@sha256:f8111737b73673f53219057414dc7c9a9beaa76a78df0fd56e2c0e283f89f6ed**. It contains the migration assessment linting CLI and migration actions for specific component migrations.
 
 For details about the container image, including versions, see the [**rhoai/rhai-cli-rhel9** page in the Red Hat Ecosystem Catalog](https://catalog.redhat.com/en/software/containers/rhoai/rhai-cli-rhel9/69a580e6a46d08df99bffe08?image=69a7dc1675d4eb16e91cb5de).
 
@@ -1158,10 +1158,10 @@ If you are a **LlamaStackDistribution** resource owner in OpenShift AI 2.25.9 (a
 
 **Procedure**
 
-1. (Optional) To archive your LlamaStack configuration and data, use the **rhai-cli** `llamastack.backup` migration action. You can preview what would be backed up with `--dry-run`, then run the backup:
+1. (Optional) To archive your LlamaStack configuration and data, use the **rhai-cli** `llamastack.backup` migration action. The `llamastack.backup` migration is a prepare-only action. You can preview what would be backed up with `--dry-run`, then run the backup:
 
    ```bash
-   $ rhai-cli migrate run --migration llamastack.backup --target-version 3.5.0 --dry-run
+   $ rhai-cli migrate prepare --migration llamastack.backup --target-version 3.5.0 --dry-run
    $ rhai-cli migrate prepare --migration llamastack.backup --target-version 3.5.0 --output-dir /backups
    ```
 
@@ -1172,10 +1172,9 @@ If you are a **LlamaStackDistribution** resource owner in OpenShift AI 2.25.9 (a
      → Discover LlamaStack resources
        ✓ Found 1 LlamaStack resource(s)
      → Backup LlamaStack \<resource-name\> (\<namespace\>)
-       ✓ Saved llamastack-\<resource-name\>-\<namespace\>.yaml
+       ✓ Saved \<namespace\>/\<resource-name\>/llamastackdistributions.llamastack.io-\<resource-name\>.yaml
 
    Preparation llamastack.backup completed successfully\!
-   Backups saved to: /backups/backup-migrate-\<timestamp\>
 
    Next steps:
 
@@ -1353,15 +1352,13 @@ Verify that the management state of the TrustyAI component for your Data Science
 
    If the output is empty, **Removed**, or **Unmanaged**, you do not need to perform any steps for the TrustyAI component before you upgrade to OpenShift AI 3.5.
 
-   
-
-3. Get a list of the namespaces that contain a TrustyAI service:
+2. Get a list of the namespaces that contain a TrustyAI service:
 
    ```bash
    $ oc get trustyaiservice -A
    ```
 
-4. Example output:
+   Example output:
 
    ```
    NAMESPACE                 NAME               AGE
@@ -1371,7 +1368,7 @@ Verify that the management state of the TrustyAI component for your Data Science
    **Note**  
    If the output is **No resources found**, there are no metrics or storage data to backup. Skip to TrustyAI \- Before upgrade \- Guardrails Orchestrator.
 
-5. Create a directory for backups:
+3. Create a directory for backups:
 
    ```bash
    $ mkdir -p /tmp/rhoai-upgrade-backup/trustyai
@@ -3370,13 +3367,106 @@ After preparing your cluster and changing the subscription channel, you must man
 
 11. Approve the install plan to begin the upgrade.
 
-1. In the **Upgrade status** section, click the "requires approval" link to approve the upgrade installation.  
-2. Review the upgrade install plan details and click **Approve**. The upgrade process begins.
+   1. In the **Upgrade status** section, click the "requires approval" link to approve the upgrade installation.  
+   2. Review the upgrade install plan details and click **Approve**. The upgrade process begins.
 
 12. While the upgrade is in progress, monitor the following:
 
-1. Watch the operator pods as they restart to replace the version 2.25.9 (and later) Operator.  
-2. Verify that the new operator pods reach the **Running** state and that the **Ready** condition is **True**.
+   1. Watch the operator pods as they restart to replace the version 2.25.9 (and later) Operator.  
+   2. Verify that the new operator pods reach the **Running** state and that the **Ready** condition is **True**.
+
+13. Install the **JobSet** operator. OpenShift AI 3.5 requires the JobSet operator as a Kueue dependency. Without it, the **DataScienceCluster** remains in a **Not Ready** state with `KueueReady=False`.
+
+   **Important**  
+   The JobSet operator only supports **OwnNamespace** and **SingleNamespace** install modes. Do not install it in the `openshift-operators` namespace, which uses an **AllNamespaces** OperatorGroup.
+
+   1. Create a dedicated namespace:
+
+      ```bash
+      $ oc create namespace jobset-system
+      ```
+
+   2. Create an **OwnNamespace** OperatorGroup:
+
+      ```bash
+      $ oc apply -f - <<'EOF'
+      apiVersion: operators.coreos.com/v1
+      kind: OperatorGroup
+      metadata:
+        name: jobset-operator-group
+        namespace: jobset-system
+      spec:
+        targetNamespaces:
+          - jobset-system
+      EOF
+      ```
+
+   3. Subscribe to the operator:
+
+      ```bash
+      $ oc apply -f - <<'EOF'
+      apiVersion: operators.coreos.com/v1alpha1
+      kind: Subscription
+      metadata:
+        name: job-set
+        namespace: jobset-system
+      spec:
+        channel: stable-v1.0
+        installPlanApproval: Automatic
+        name: job-set
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace
+      EOF
+      ```
+
+   4. Wait for the CSV to reach **Succeeded**:
+
+      ```bash
+      $ oc wait csv jobset-operator.v1.0.0 -n jobset-system \
+        --for=jsonpath='{.status.phase}'=Succeeded --timeout=120s
+      ```
+
+      **Tip**  
+      If the CSV name differs from `jobset-operator.v1.0.0`, verify it with `oc get csv -n jobset-system`.
+
+   5. Create the **JobSetOperator** custom resource to deploy the operand. This installs the `jobsets.jobset.x-k8s.io` CRD that Kueue requires:
+
+      ```bash
+      $ oc apply -f - <<'EOF'
+      apiVersion: operator.openshift.io/v1
+      kind: JobSetOperator
+      metadata:
+        name: cluster
+      spec:
+        managementState: Managed
+        logLevel: Normal
+        operatorLogLevel: Normal
+      EOF
+      ```
+
+   6. Verify that the CRD exists and KueueReady is True:
+
+      ```bash
+      $ oc get crd jobsets.jobset.x-k8s.io
+      $ oc get dsc -o jsonpath='{.items[0].status.conditions[?(@.type=="KueueReady")].status}' && echo
+      ```
+
+      Expected output: the CRD is listed and KueueReady shows **True**.
+
+14. Verify that the rhai-cli pod has cluster access for post-upgrade commands. The service account ClusterRoleBinding may need to be re-applied after the upgrade:
+
+   ```bash
+   $ oc auth can-i list csv -A --as=system:serviceaccount:rhai-migration:default
+   ```
+
+   If the output is **no**, restore the ClusterRoleBinding:
+
+   ```bash
+   $ oc adm policy add-cluster-role-to-user cluster-admin -z default -n rhai-migration
+   ```
+
+   **Note**  
+   Replace `rhai-migration` with the namespace where your rhai-cli pod is deployed. This binding is required for all post-upgrade rhai-cli commands in Chapter 4.
 
 # **Chapter 4\. After upgrading to 3.5** {#chapter-4.-after-upgrading-to-3.3-(latest)}
 

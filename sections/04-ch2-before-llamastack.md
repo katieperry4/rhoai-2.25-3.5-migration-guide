@@ -72,10 +72,10 @@ If you are a **LlamaStackDistribution** resource owner in OpenShift AI 2.25.9 (a
 
 **Procedure**
 
-1. (Optional) To archive your LlamaStack configuration and data, use the **rhai-cli** `llamastack.backup` migration action. You can preview what would be backed up with `--dry-run`, then run the backup:
+1. (Optional) To archive your LlamaStack configuration and data, use the **rhai-cli** `llamastack.backup` migration action. The `llamastack.backup` migration is a prepare-only action. You can preview what would be backed up with `--dry-run`, then run the backup:
 
    ```bash
-   $ rhai-cli migrate run --migration llamastack.backup --target-version 3.5.0 --dry-run
+   $ rhai-cli migrate prepare --migration llamastack.backup --target-version 3.5.0 --dry-run
    $ rhai-cli migrate prepare --migration llamastack.backup --target-version 3.5.0 --output-dir /backups
    ```
 
@@ -86,10 +86,9 @@ If you are a **LlamaStackDistribution** resource owner in OpenShift AI 2.25.9 (a
      → Discover LlamaStack resources
        ✓ Found 1 LlamaStack resource(s)
      → Backup LlamaStack \<resource-name\> (\<namespace\>)
-       ✓ Saved llamastack-\<resource-name\>-\<namespace\>.yaml
+       ✓ Saved \<namespace\>/\<resource-name\>/llamastackdistributions.llamastack.io-\<resource-name\>.yaml
 
    Preparation llamastack.backup completed successfully\!
-   Backups saved to: /backups/backup-migrate-\<timestamp\>
 
    Next steps:
 
