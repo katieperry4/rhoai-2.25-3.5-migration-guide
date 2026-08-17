@@ -1084,7 +1084,7 @@ As an OpenShift AI user, for each Feature Store instance:
 
 2. Verify that the Feature Store UI shows any features, entities, feature-views, data sources, and feature services that you previously configured in your feature store.
 
-##  **2.5. Llama Stack / OGX (Open GenAI Stack) \- Before upgrade** {#2.5.-llama-stack---before-upgrade}
+##  **2.3. Llama Stack / OGX (Open GenAI Stack) \- Before upgrade** {#2.3.-llama-stack---before-upgrade}
 
 **IMPORTANT** 
 
