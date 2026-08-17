@@ -1165,8 +1165,9 @@ If you are a **LlamaStackDistribution** resource owner in OpenShift AI 2.25.9 (a
    $ rhai-cli migrate prepare --migration llamastack.backup --target-version 3.5.0 --output-dir /backups
    ```
 
-   Expected Output
+   Expected Output:
 
+   ```bash
    llamastack.backup:
 
      → Discover LlamaStack resources
@@ -1175,6 +1176,7 @@ If you are a **LlamaStackDistribution** resource owner in OpenShift AI 2.25.9 (a
        ✓ Saved \<namespace\>/\<resource-name\>/llamastackdistributions.llamastack.io-\<resource-name\>.yaml
 
    Preparation llamastack.backup completed successfully\!
+   ```
 
    Next steps:
 
@@ -1193,16 +1195,20 @@ If you are a **LlamaStackDistribution** resource owner in OpenShift AI 2.25.9 (a
    $ oc get -A llsd
    ```
 
+   Example output:
+
+   ```bash
    NAMESPACE             NAME                                 PHASE   OPERATOR VERSION   SERVER VERSION   AVAILABLE   AGE
 
    ldap-user17-rag-225   lsd-llama-milvus-2323                Ready   "0.3.0"            0.2.22.2+rhai0   1           11d
 
    neha                  lsd-llama-milvus                     Ready   "0.3.0"            0.2.22.2+rhai0   1           11d
+   ```
 
-   For each llsd
+   For each llsd:
 
    ```bash
-   $ oc delete -n <nanemspace> llsd/<lls-resource-name>
+   $ oc delete -n <namespace> llsd/<llsd-resource-name>
    ```
 
 3. During the recreation of deployments as **OGXServer** resources in OpenShift AI 3.5, you must complete and understand the following:
