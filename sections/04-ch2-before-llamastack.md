@@ -107,16 +107,18 @@ If you are a **LlamaStackDistribution** resource owner in OpenShift AI 2.25.9 (a
    $ oc get -A llsd
    ```
 
+   ```bash
    NAMESPACE             NAME                                 PHASE   OPERATOR VERSION   SERVER VERSION   AVAILABLE   AGE
 
    ldap-user17-rag-225   lsd-llama-milvus-2323                Ready   "0.3.0"            0.2.22.2+rhai0   1           11d
 
    neha                  lsd-llama-milvus                     Ready   "0.3.0"            0.2.22.2+rhai0   1           11d
+   ```
 
    For each llsd
 
    ```bash
-   $ oc delete -n <nanemspace> llsd/<lls-resource-name>
+   $ oc delete -n <namespace> llsd/<llsd-resource-name>
    ```
 
 3. During the recreation of deployments as **OGXServer** resources in OpenShift AI 3.5, you must complete and understand the following:
