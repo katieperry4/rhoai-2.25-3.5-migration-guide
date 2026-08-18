@@ -1,4 +1,3 @@
-## 
 
 ## **2.11. Kubeflow Training Operator \- Before upgrade** {#2.11.-kubeflow-training-operator---before-upgrade}
 
@@ -26,8 +25,11 @@ The Kubeflow Training Operator (KFTO) v1 is deprecated starting with theOpenShif
 **Verification**
 
 The command returns a list of PyTorchJob resources, as shown in this example output:  
+
+```bash
 NAMESPACE          NAME                           STATE       AGE  
 pytorch-training   pytorch-distributed-training   Running     4m27s
+```
 
 **Warning**
 

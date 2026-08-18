@@ -1294,8 +1294,11 @@ However, the upgrade includes updates to API versions and RBAC permissions. Befo
    $ rhai-cli migrate run --migration ai-pipelines.pre-upgrade-check --target-version 3.5.0
    ```
 
-   You can ignore the following warning if it appears, because it does not affect the upgrade:  
+   You can ignore the following warning if it appears, because it does not affect the upgrade:
+
+   ```bash
    Found DataSciencePipelinesApplication(s) with deprecated '.spec.apiServer.managedPipelines.instructLab' field
+   ```
 
 **Verification**
 
@@ -1724,15 +1727,13 @@ For each namespace that has the TrustyAI Guardrails Orchestrator service:
    ```
 
    The output should be a non-empty dictionary. If you have no additional **GuardrailsOrchestrator** instances, you have completed the Before upgrade \- Guardrails Orchestrator procedure. Otherwise, repeat the steps in this procedure for additional instances.
-## 
-
 ## **2.8. Workbenches \- Before upgrade** {#2.8.-workbenches---before-upgrade}
 
 ### **2.8.1. About upgrading your workbenches** {#2.8.1.-about-upgrading-your-workbenches}
 
 As a Red Hat OpenShift AI administrator, you have flexibility in your upgrade strategy for your workbench images and server.
 
-There are two major upgrade paths to follow. As a Red Hat OpenShift AI administrator, you can either manage the upgrade fully by ensuring all workbenches have been stopped and workbench images have been migrated prior to the upgrade, or defer migration and enable your users to continue their workbench image migration with user self-service. Deferred migrations come with additional risk, so it is important to understand the impacts of your upgrade path. See "[Perform a deferred workbench image migration](#4.7.2.-perform-a-deferred-workbench-image-migration)" for more information.
+There are two major upgrade paths to follow. As a Red Hat OpenShift AI administrator, you can either manage the upgrade fully by ensuring all workbenches have been stopped and workbench images have been migrated prior to the upgrade, or defer migration and enable your users to continue their workbench image migration with user self-service. Deferred migrations come with additional risk, so it is important to understand the impacts of your upgrade path. See [Perform a deferred workbench image migration](#4.7.2.-perform-a-deferred-workbench-image-migration) for more information.
 
 **Considerations before upgrading your workbench**
 
@@ -1791,7 +1792,7 @@ All procedures in this section must be completed before upgrading the Red Hat Op
 
    * Workbench images left unmigrated continue to operate on the older 2.25.9 (and later) authentication layer. This hybrid environment may result in redirection loops and connectivity failures, primarily due to **NB\_PREFIX** routing conflicts for RStudio, code-server, and custom images.
 
-   * If your users are unable to stop all workbenches before the upgrade from OpenShift AI version 2.25.9 (and later) to 3.5, you can elect to defer image migration until after upgrading to Red Hat OpenShift AI version 3.5. Choosing to defer your image migration introduces additional complexity and risk to your upgrade process. See "Performing a deferred workbench image migration" for more information.
+   * If your users are unable to stop all workbenches before the upgrade from OpenShift AI version 2.25.9 (and later) to 3.5, you can elect to defer image migration until after upgrading to Red Hat OpenShift AI version 3.5. Choosing to defer your image migration introduces additional complexity and risk to your upgrade process. See [Perform a deferred workbench image migration](#4.7.2.-perform-a-deferred-workbench-image-migration) for more information.
 
 **Verification**
 
@@ -1804,32 +1805,36 @@ All procedures in this section must be completed before upgrading the Red Hat Op
    $ rhai-cli lint --target-version 3.5 --checks "*notebook*"
    ```
 
-   **Example output**
+   **Example output:**
 
-│ STATUS  KIND      GROUP     CHECK                         IMPACT   MESSAGE                                                                          │  
-├────────────────────────────────────────────────────────────────────────────┤  
-│ ⚠       notebook  workload  impacted-workloads            warning  Found 9 Notebook(s) using 6 unique images:                                       │  
-│                                                                    \- 7 compatible (4 images, OOTB ready for 3.5)                                    │  
-│                                                                    \- 1 custom (1 images, user verification needed)                                  │  
-│                                                                    \- 0 incompatible (0 images, update recommended before upgrade)                   │  
-│                                                                    \- 1 incompatible (1 images, must rebuild after upgrade to 3.x)                   │  
-│                                                                    \- 0 unverified (0 images, could not determine status)                            │  
-│ ✓       notebook  workload  acceleratorprofile-migration  info     No Notebooks found using deprecated AcceleratorProfiles \- no migration needed    │  
-│ ✓       notebook  workload  config-migration              info     No Notebooks found with container name mismatch                                  │  
-│ ✓       notebook  workload  config-migration              info     No Notebooks found with legacy hardware profile annotation \- no migration needed │  
-│ ✓       notebook  workload  data-integrity                info     All Notebook connections reference existing Secrets                              │  
-│ ✓       notebook  workload  data-integrity                info     All Notebooks reference existing HardwareProfiles                                │  
-│ ✓       notebook  workload  workload-state                info     All Notebooks are stopped                                                        │  
-└─────────────────────────────────────────────────────────────────────────────  
-Environment:  
-  OpenShift AI version: 2.25.9 (and later) \-\> 3.5  
-  OpenShift version:    4.20.0
+      ```bash
 
-Summary:  
-  Total: 7 | Passed: 6 | Warnings: 1 | Failed: 0 | Prohibited: 0
+      │ STATUS  KIND      GROUP     CHECK                         IMPACT   MESSAGE                                                                          │  
+      ├────────────────────────────────────────────────────────────────────────────┤  
+      │ ⚠       notebook  workload  impacted-workloads            warning  Found 9 Notebook(s) using 6 unique images:                                       │  
+      │                                                                    \- 7 compatible (4 images, OOTB ready for 3.5)                                    │  
+      │                                                                    \- 1 custom (1 images, user verification needed)                                  │  
+      │                                                                    \- 0 incompatible (0 images, update recommended before upgrade)                   │  
+      │                                                                    \- 1 incompatible (1 images, must rebuild after upgrade to 3.x)                   │  
+      │                                                                    \- 0 unverified (0 images, could not determine status)                            │  
+      │ ✓       notebook  workload  acceleratorprofile-migration  info     No Notebooks found using deprecated AcceleratorProfiles \- no migration needed    │  
+      │ ✓       notebook  workload  config-migration              info     No Notebooks found with container name mismatch                                  │  
+      │ ✓       notebook  workload  config-migration              info     No Notebooks found with legacy hardware profile annotation \- no migration needed │  
+      │ ✓       notebook  workload  data-integrity                info     All Notebook connections reference existing Secrets                              │  
+      │ ✓       notebook  workload  data-integrity                info     All Notebooks reference existing HardwareProfiles                                │  
+      │ ✓       notebook  workload  workload-state                info     All Notebooks are stopped                                                        │  
+      └─────────────────────────────────────────────────────────────────────────────  
+      Environment:  
+      OpenShift AI version: 2.25.9 (and later) \-\> 3.5  
+      OpenShift version:    4.20.0
 
-Result:  
-  WARNING \- advisory findings detected
+      Summary:  
+      Total: 7 | Passed: 6 | Warnings: 1 | Failed: 0 | Prohibited: 0
+
+      Result:  
+      WARNING \- advisory findings detected
+
+    ```
 
 2. Verify that all workbenches eligible for upgrading are in a stopped state across all namespaces with the following command:
 
@@ -3133,7 +3138,6 @@ If the **rhai-cli** output identifies issues:
 **Important**
 
 Do not proceed with the Red Hat OpenShift AI operator upgrade from version 2.25.9 (and later) to 3.5 if the **rhai-cli** output shows any critical issues. Address all critical issues by completing the relevant component migration procedures before upgrading.
-## 
 
 ## **2.11. Kubeflow Training Operator \- Before upgrade** {#2.11.-kubeflow-training-operator---before-upgrade}
 
@@ -3161,8 +3165,11 @@ The Kubeflow Training Operator (KFTO) v1 is deprecated starting with theOpenShif
 **Verification**
 
 The command returns a list of PyTorchJob resources, as shown in this example output:  
+
+```bash
 NAMESPACE          NAME                           STATE       AGE  
 pytorch-training   pytorch-distributed-training   Running     4m27s
+```
 
 **Warning**
 
@@ -3726,7 +3733,10 @@ If you used the Feature Store component in OpenShift AI 2.25, follow the steps i
    ```
 
    Example output:  
+
+   ```bash
    feast-operator-controller-manager-89b9dc4b-lmhsc        1/1     Running
+   ```
 
 2. As an OpenShift AI administrator, get a list of all Feature Store instances on the cluster and verify that each Feature Store instance is in the **Ready** state:
 
@@ -3734,6 +3744,7 @@ If you used the Feature Store component in OpenShift AI 2.25, follow the steps i
    $ oc get featurestores --all-namespaces
    ```
 
+   ```bash
    Example output:  
    NAMESPACE        NAME              STATUS      AGE
 
@@ -3742,6 +3753,7 @@ If you used the Feature Store component in OpenShift AI 2.25, follow the steps i
    project-beta     demo-store        Ready       2d     
 
    project-gamma    prod-store        Ready       10d
+   ```
 
 3. As an OpenShift AI administrator, follow these steps for each Feature Store instance:
 
@@ -4813,8 +4825,7 @@ Use the following information to help troubleshoot problems with Ray clusters af
 * **You ran the post-upgrade migration command and its output indicates a Ray cluster failure**  
   If a Ray cluster fails to be ready, the command identifies the Ray cluster with **\[FAIL\]** status, as shown in the following example:
 
-
-  ```
+  ```bash
   [OK] Migrated: cluster-a (ns: my-ns)
 
        Dashboard: https://cluster-a-my-ns.apps.example.com
@@ -4824,13 +4835,14 @@ Use the following information to help troubleshoot problems with Ray clusters af
        Please check this cluster (and any others that timed out) and
        revisit as needed.
 
-============================================================
-Migration Summary:
-  Migrated: 2
-  Skipped (already migrated): 1
-  Failed: 1
-  Failed clusters include those that did not become ready
-  within 5 min — please verify status and revisit as needed.
+
+  ============================================================
+  Migration Summary:
+    Migrated: 2
+    Skipped (already migrated): 1
+    Failed: 1
+    Failed clusters include those that did not become ready
+    within 5 min — please verify status and revisit as needed.
   ```
 
 Resolve any issues and then run the migration command again. Optionally, you can run the command with the **\--raycluster-from-backup $BACKUP\_DIR/rhoai-3.x** argument.
@@ -5275,8 +5287,10 @@ The Kubeflow Training Operator (KFTO) v1 is deprecated starting with theOpenShif
    ```
 
    Example output:  
+   ```bash
    NAMESPACE          NAME                           STATE       AGE  
    pytorch-training   pytorch-distributed-training   Running     4m27s
+   ```
 
 2. Compare the list from Step 1a to the list of PyTorchJob resources that you generated before upgrading to OpenShift AI 3.5.
 

@@ -224,7 +224,10 @@ If you used the Feature Store component in OpenShift AI 2.25, follow the steps i
    ```
 
    Example output:  
+
+   ```bash
    feast-operator-controller-manager-89b9dc4b-lmhsc        1/1     Running
+   ```
 
 2. As an OpenShift AI administrator, get a list of all Feature Store instances on the cluster and verify that each Feature Store instance is in the **Ready** state:
 
@@ -232,6 +235,7 @@ If you used the Feature Store component in OpenShift AI 2.25, follow the steps i
    $ oc get featurestores --all-namespaces
    ```
 
+   ```bash
    Example output:  
    NAMESPACE        NAME              STATUS      AGE
 
@@ -240,6 +244,7 @@ If you used the Feature Store component in OpenShift AI 2.25, follow the steps i
    project-beta     demo-store        Ready       2d     
 
    project-gamma    prod-store        Ready       10d
+   ```
 
 3. As an OpenShift AI administrator, follow these steps for each Feature Store instance:
 
