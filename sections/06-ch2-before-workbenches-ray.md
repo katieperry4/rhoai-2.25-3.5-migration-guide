@@ -1,12 +1,10 @@
-## 
-
 ## **2.8. Workbenches \- Before upgrade** {#2.8.-workbenches---before-upgrade}
 
 ### **2.8.1. About upgrading your workbenches** {#2.8.1.-about-upgrading-your-workbenches}
 
 As a Red Hat OpenShift AI administrator, you have flexibility in your upgrade strategy for your workbench images and server.
 
-There are two major upgrade paths to follow. As a Red Hat OpenShift AI administrator, you can either manage the upgrade fully by ensuring all workbenches have been stopped and workbench images have been migrated prior to the upgrade, or defer migration and enable your users to continue their workbench image migration with user self-service. Deferred migrations come with additional risk, so it is important to understand the impacts of your upgrade path. See "[Perform a deferred workbench image migration](#4.7.2.-perform-a-deferred-workbench-image-migration)" for more information.
+There are two major upgrade paths to follow. As a Red Hat OpenShift AI administrator, you can either manage the upgrade fully by ensuring all workbenches have been stopped and workbench images have been migrated prior to the upgrade, or defer migration and enable your users to continue their workbench image migration with user self-service. Deferred migrations come with additional risk, so it is important to understand the impacts of your upgrade path. See [Perform a deferred workbench image migration](#4.7.2.-perform-a-deferred-workbench-image-migration) for more information.
 
 **Considerations before upgrading your workbench**
 
@@ -65,7 +63,7 @@ All procedures in this section must be completed before upgrading the Red Hat Op
 
    * Workbench images left unmigrated continue to operate on the older 2.25.9 (and later) authentication layer. This hybrid environment may result in redirection loops and connectivity failures, primarily due to **NB\_PREFIX** routing conflicts for RStudio, code-server, and custom images.
 
-   * If your users are unable to stop all workbenches before the upgrade from OpenShift AI version 2.25.9 (and later) to 3.5, you can elect to defer image migration until after upgrading to Red Hat OpenShift AI version 3.5. Choosing to defer your image migration introduces additional complexity and risk to your upgrade process. See "Performing a deferred workbench image migration" for more information.
+   * If your users are unable to stop all workbenches before the upgrade from OpenShift AI version 2.25.9 (and later) to 3.5, you can elect to defer image migration until after upgrading to Red Hat OpenShift AI version 3.5. Choosing to defer your image migration introduces additional complexity and risk to your upgrade process. See [Perform a deferred workbench image migration](#4.7.2.-perform-a-deferred-workbench-image-migration) for more information.
 
 **Verification**
 
@@ -78,32 +76,36 @@ All procedures in this section must be completed before upgrading the Red Hat Op
    $ rhai-cli lint --target-version 3.5 --checks "*notebook*"
    ```
 
-   **Example output**
+   **Example output:**
 
-│ STATUS  KIND      GROUP     CHECK                         IMPACT   MESSAGE                                                                          │  
-├────────────────────────────────────────────────────────────────────────────┤  
-│ ⚠       notebook  workload  impacted-workloads            warning  Found 9 Notebook(s) using 6 unique images:                                       │  
-│                                                                    \- 7 compatible (4 images, OOTB ready for 3.5)                                    │  
-│                                                                    \- 1 custom (1 images, user verification needed)                                  │  
-│                                                                    \- 0 incompatible (0 images, update recommended before upgrade)                   │  
-│                                                                    \- 1 incompatible (1 images, must rebuild after upgrade to 3.x)                   │  
-│                                                                    \- 0 unverified (0 images, could not determine status)                            │  
-│ ✓       notebook  workload  acceleratorprofile-migration  info     No Notebooks found using deprecated AcceleratorProfiles \- no migration needed    │  
-│ ✓       notebook  workload  config-migration              info     No Notebooks found with container name mismatch                                  │  
-│ ✓       notebook  workload  config-migration              info     No Notebooks found with legacy hardware profile annotation \- no migration needed │  
-│ ✓       notebook  workload  data-integrity                info     All Notebook connections reference existing Secrets                              │  
-│ ✓       notebook  workload  data-integrity                info     All Notebooks reference existing HardwareProfiles                                │  
-│ ✓       notebook  workload  workload-state                info     All Notebooks are stopped                                                        │  
-└─────────────────────────────────────────────────────────────────────────────  
-Environment:  
-  OpenShift AI version: 2.25.9 (and later) \-\> 3.5  
-  OpenShift version:    4.20.0
+      ```bash
 
-Summary:  
-  Total: 7 | Passed: 6 | Warnings: 1 | Failed: 0 | Prohibited: 0
+      │ STATUS  KIND      GROUP     CHECK                         IMPACT   MESSAGE                                                                          │  
+      ├────────────────────────────────────────────────────────────────────────────┤  
+      │ ⚠       notebook  workload  impacted-workloads            warning  Found 9 Notebook(s) using 6 unique images:                                       │  
+      │                                                                    \- 7 compatible (4 images, OOTB ready for 3.5)                                    │  
+      │                                                                    \- 1 custom (1 images, user verification needed)                                  │  
+      │                                                                    \- 0 incompatible (0 images, update recommended before upgrade)                   │  
+      │                                                                    \- 1 incompatible (1 images, must rebuild after upgrade to 3.x)                   │  
+      │                                                                    \- 0 unverified (0 images, could not determine status)                            │  
+      │ ✓       notebook  workload  acceleratorprofile-migration  info     No Notebooks found using deprecated AcceleratorProfiles \- no migration needed    │  
+      │ ✓       notebook  workload  config-migration              info     No Notebooks found with container name mismatch                                  │  
+      │ ✓       notebook  workload  config-migration              info     No Notebooks found with legacy hardware profile annotation \- no migration needed │  
+      │ ✓       notebook  workload  data-integrity                info     All Notebook connections reference existing Secrets                              │  
+      │ ✓       notebook  workload  data-integrity                info     All Notebooks reference existing HardwareProfiles                                │  
+      │ ✓       notebook  workload  workload-state                info     All Notebooks are stopped                                                        │  
+      └─────────────────────────────────────────────────────────────────────────────  
+      Environment:  
+      OpenShift AI version: 2.25.9 (and later) \-\> 3.5  
+      OpenShift version:    4.20.0
 
-Result:  
-  WARNING \- advisory findings detected
+      Summary:  
+      Total: 7 | Passed: 6 | Warnings: 1 | Failed: 0 | Prohibited: 0
+
+      Result:  
+      WARNING \- advisory findings detected
+
+    ```
 
 2. Verify that all workbenches eligible for upgrading are in a stopped state across all namespaces with the following command:
 

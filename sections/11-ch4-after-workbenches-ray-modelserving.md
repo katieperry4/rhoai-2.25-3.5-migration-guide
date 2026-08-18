@@ -271,8 +271,7 @@ Use the following information to help troubleshoot problems with Ray clusters af
 * **You ran the post-upgrade migration command and its output indicates a Ray cluster failure**  
   If a Ray cluster fails to be ready, the command identifies the Ray cluster with **\[FAIL\]** status, as shown in the following example:
 
-
-  ```
+  ```bash
   [OK] Migrated: cluster-a (ns: my-ns)
 
        Dashboard: https://cluster-a-my-ns.apps.example.com
@@ -282,13 +281,14 @@ Use the following information to help troubleshoot problems with Ray clusters af
        Please check this cluster (and any others that timed out) and
        revisit as needed.
 
-============================================================
-Migration Summary:
-  Migrated: 2
-  Skipped (already migrated): 1
-  Failed: 1
-  Failed clusters include those that did not become ready
-  within 5 min — please verify status and revisit as needed.
+
+  ============================================================
+  Migration Summary:
+    Migrated: 2
+    Skipped (already migrated): 1
+    Failed: 1
+    Failed clusters include those that did not become ready
+    within 5 min — please verify status and revisit as needed.
   ```
 
 Resolve any issues and then run the migration command again. Optionally, you can run the command with the **\--raycluster-from-backup $BACKUP\_DIR/rhoai-3.x** argument.

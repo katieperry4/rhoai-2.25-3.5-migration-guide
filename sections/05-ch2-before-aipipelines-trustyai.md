@@ -55,8 +55,11 @@ However, the upgrade includes updates to API versions and RBAC permissions. Befo
    $ rhai-cli migrate run --migration ai-pipelines.pre-upgrade-check --target-version 3.5.0
    ```
 
-   You can ignore the following warning if it appears, because it does not affect the upgrade:  
+   You can ignore the following warning if it appears, because it does not affect the upgrade:
+
+   ```bash
    Found DataSciencePipelinesApplication(s) with deprecated '.spec.apiServer.managedPipelines.instructLab' field
+   ```
 
 **Verification**
 

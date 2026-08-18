@@ -38,8 +38,10 @@ The Kubeflow Training Operator (KFTO) v1 is deprecated starting with theOpenShif
    ```
 
    Example output:  
+   ```bash
    NAMESPACE          NAME                           STATE       AGE  
    pytorch-training   pytorch-distributed-training   Running     4m27s
+   ```
 
 2. Compare the list from Step 1a to the list of PyTorchJob resources that you generated before upgrading to OpenShift AI 3.5.
 
