@@ -1,6 +1,6 @@
 ## 
 
-## **2.9. Kubeflow Training Operator \- Before upgrade** {#2.9.-kubeflow-training-operator---before-upgrade}
+## **2.11. Kubeflow Training Operator \- Before upgrade** {#2.11.-kubeflow-training-operator---before-upgrade}
 
 You can upgrade Red Hat OpenShift AI 2.25.9 (and later) to 3.5 while PyTorchJobs are running; the jobs continue to run during the upgrade process and complete as normal.
 
@@ -33,7 +33,7 @@ pytorch-training   pytorch-distributed-training   Running     4m27s
 
 As a cluster administrator, if you want to perform an OpenShift Container Platform (OCP) upgrade, an OCP upgrade process might stop nodes which might interrupt PyTorchJobs. Ensure that either no PyTorchJobs are running during the OCP upgrade or verify that the running PyTorchJobs include checkpointing so that they are resilient to failure.
 
-## **2.10. OpenShift AI Operator \- Before upgrade** {#2.10.-openshift-ai-operator---before-upgrade}
+## **2.12. OpenShift AI Operator \- Before upgrade** {#2.12.-openshift-ai-operator---before-upgrade}
 
 Before upgrading Red Hat OpenShift AI from version 2.25.9 (and later) to 3.5, complete the following steps to ensure a successful migration of the OpenShift AI Operator.
 
@@ -120,7 +120,7 @@ If you have bookmarked dashboard URLs, you must recreate redirects **after** the
 
 # 
 
-# **Chapter 3\. Upgrade to 3.5** {#chapter-3.-upgrade-to-3.3-(latest)}
+# **Chapter 3\. Upgrade to 3.5** {#chapter-3.-upgrade-to-3.5-latest}
 
 ## **3.1. OpenShift AI Operator**  {#3.1.-openshift-ai-operator}
 

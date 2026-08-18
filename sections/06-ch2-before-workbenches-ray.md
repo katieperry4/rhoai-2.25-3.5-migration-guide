@@ -1,8 +1,8 @@
 ## 
 
-## **2.6. Workbenches \- Before upgrade** {#2.6.-workbenches---before-upgrade}
+## **2.8. Workbenches \- Before upgrade** {#2.8.-workbenches---before-upgrade}
 
-### **2.6.1. About upgrading your workbenches** {#2.6.1.-about-upgrading-your-workbenches}
+### **2.8.1. About upgrading your workbenches** {#2.8.1.-about-upgrading-your-workbenches}
 
 As a Red Hat OpenShift AI administrator, you have flexibility in your upgrade strategy for your workbench images and server.
 
@@ -23,7 +23,7 @@ There are two major upgrade paths to follow. As a Red Hat OpenShift AI administr
   **Important**  
   Workbenches that are not migrated will remain on the OpenShift AI 2.25.9 (and later) authentication layer. This legacy setup, paired with potential **NB\_PREFIX** routing conflicts, often results in redirection loops or connectivity failures—particularly for RStudio, Code Server, or custom images.
 
-###  **2.6.2. Prepare your workbenches for migration** {#2.6.2.-prepare-your-workbenches-for-migration}
+###  **2.8.2. Prepare your workbenches for migration** {#2.8.2.-prepare-your-workbenches-for-migration}
 
 **Important**
 
@@ -128,7 +128,7 @@ Result:
 
 ## 
 
-## **2.7. Ray Training Operator \- Before upgrade** {#2.7.-ray-training-operator---before-upgrade}
+## **2.9. Ray Training Operator \- Before upgrade** {#2.9.-ray-training-operator---before-upgrade}
 
 Before upgrading from Red Hat OpenShift AI to 3.5, you must prepare your existing Ray clusters to work with the 3.5 architecture.
 
@@ -156,7 +156,7 @@ Before you begin the migration process, warn your users that it will cause tempo
 
 **Prerequisites**
 
-* **WARNING:** You must follow the [Before upgrade steps for the Workbench component](#2.6.-workbenches---before-upgrade) before you migrate your Ray clusters.
+* **WARNING:** You must follow the [Before upgrade steps for the Workbench component](#2.8.-workbenches---before-upgrade) before you migrate your Ray clusters.
 
 * You have cluster administrator access.
 
