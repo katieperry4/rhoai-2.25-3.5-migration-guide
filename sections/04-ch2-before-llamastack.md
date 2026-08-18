@@ -1,4 +1,4 @@
-##  **2.3. Llama Stack / OGX (Open GenAI Stack) \- Before upgrade** {#2.3.-llama-stack---before-upgrade}
+##  **2.5. Llama Stack / OGX (Open GenAI Stack) \- Before upgrade** {#2.5.-llama-stack---before-upgrade}
 
 **IMPORTANT** 
 
@@ -30,7 +30,7 @@ Since Llama Stack was in Technology Preview in 2.25.x and has been renamed to OG
 
 * All resources stored in SQLite
 
-###  **2.3.1. Llama Stack upgrade steps for cluster administrators** {#2.3.1.-llama-stack-upgrade-steps-for-cluster-administrators}
+###  **2.5.1. Llama Stack upgrade steps for cluster administrators** {#2.5.1.-llama-stack-upgrade-steps-for-cluster-administrators}
 
 **Prerequisites**
 
@@ -62,7 +62,7 @@ Since Llama Stack was in Technology Preview in 2.25.x and has been renamed to OG
 
    * Provide them with the OpenShift AI 3.5 OGX documentation for recreating deployments. See [Working with Llama Stack](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/working_with_llama_stack/index).
 
-### **2.3.2. Llama Stack upgrade steps for LlamaStackDistribution resource owners** {#2.3.2.-llama-stack-upgrade-steps-for-llamastackdistribution-resource-owners}
+### **2.5.2. Llama Stack upgrade steps for LlamaStackDistribution resource owners** {#2.5.2.-llama-stack-upgrade-steps-for-llamastackdistribution-resource-owners}
 
 If you are a **LlamaStackDistribution** resource owner in OpenShift AI 2.25.9 (and later), you must prepare to delete the **LlamaStackDistribution** resources before upgrade and recreate them as **OGXServer** CRs after upgrade. To prepare, you must archive Llama Stack deployment data that can be used as reference when recreating your deployment.
 

@@ -41,77 +41,77 @@
 
 [2.5. Llama Stack / OGX (Open GenAI Stack) \- Before upgrade](#2.5.-llama-stack---before-upgrade)
 
-[2.3.1. Llama Stack upgrade steps for cluster administrators](#2.3.1.-llama-stack-upgrade-steps-for-cluster-administrators)
+[2.5.1. Llama Stack upgrade steps for cluster administrators](#2.5.1.-llama-stack-upgrade-steps-for-cluster-administrators)
 
-[2.3.2. Llama Stack upgrade steps for LlamaStackDistribution resource owners](#2.3.2.-llama-stack-upgrade-steps-for-llamastackdistribution-resource-owners)
+[2.5.2. Llama Stack upgrade steps for LlamaStackDistribution resource owners](#2.5.2.-llama-stack-upgrade-steps-for-llamastackdistribution-resource-owners)
 
-[2.4. AI Pipelines \- Before upgrade](#2.4.-ai-pipelines---before-upgrade)
+[2.6. AI Pipelines \- Before upgrade](#2.6.-ai-pipelines---before-upgrade)
 
-[2.5. TrustyAI \- Before upgrade](#2.5.-trustyai---before-upgrade)
+[2.7. TrustyAI \- Before upgrade](#2.7.-trustyai---before-upgrade)
 
-[2.5.1. TrustyAI \- Before upgrade \- Prepare for backup](#2.5.1.-trustyai---before-upgrade---prepare-for-backup)
+[2.7.1. TrustyAI \- Before upgrade \- Prepare for backup](#2.7.1.-trustyai---before-upgrade---prepare-for-backup)
 
-[2.5.2. TrustyAI \- Before upgrade \- Backup metrics](#2.5.2.-trustyai---before-upgrade---backup-metrics)
+[2.7.2. TrustyAI \- Before upgrade \- Backup metrics](#2.7.2.-trustyai---before-upgrade---backup-metrics)
 
-[2.5.3. TrustyAI \- Before upgrade \- Backup data storage](#2.5.3.-trustyai---before-upgrade---backup-data-storage)
+[2.7.3. TrustyAI \- Before upgrade \- Backup data storage](#2.7.3.-trustyai---before-upgrade---backup-data-storage)
 
-[2.5.4. TrustyAI \- Before upgrade \- Guardrails Orchestrator](#2.5.4.-trustyai---before-upgrade---guardrails-orchestrator)
+[2.7.4. TrustyAI \- Before upgrade \- Guardrails Orchestrator](#2.7.4.-trustyai---before-upgrade---guardrails-orchestrator)
 
-[2.6. Workbenches \- Before upgrade](#2.6.-workbenches---before-upgrade)
+[2.8. Workbenches \- Before upgrade](#2.8.-workbenches---before-upgrade)
 
-[2.6.1. About upgrading your workbenches](#2.6.1.-about-upgrading-your-workbenches)
+[2.8.1. About upgrading your workbenches](#2.8.1.-about-upgrading-your-workbenches)
 
-[2.6.2. Prepare your workbenches for migration](#2.6.2.-prepare-your-workbenches-for-migration)
+[2.8.2. Prepare your workbenches for migration](#2.8.2.-prepare-your-workbenches-for-migration)
 
-[2.7. Ray Training Operator \- Before upgrade](#2.7.-ray-training-operator---before-upgrade)
+[2.9. Ray Training Operator \- Before upgrade](#2.9.-ray-training-operator---before-upgrade)
 
-[2.8. Model serving \- Before upgrade](#2.8.-model-serving---before-upgrade)
+[2.10. Model serving \- Before upgrade](#2.10.-model-serving---before-upgrade)
 
-[2.8.1. Migration impact and scope](#2.8.1.-migration-impact-and-scope)
+[2.10.1. Migration impact and scope](#2.10.1.-migration-impact-and-scope)
 
-[2.8.2. Removed model serving configurations](#2.8.2.-removed-model-serving-configurations)
+[2.10.2. Removed model serving configurations](#2.10.2.-removed-model-serving-configurations)
 
-[2.8.3. Migration workflow for model serving](#2.8.3.-migration-workflow-for-model-serving)
+[2.10.3. Migration workflow for model serving](#2.10.3.-migration-workflow-for-model-serving)
 
-[2.8.4. Prerequisites for model serving migration](#2.8.4.-prerequisites-for-model-serving-migration)
+[2.10.4. Prerequisites for model serving migration](#2.10.4.-prerequisites-for-model-serving-migration)
 
-[2.8.5. Run the rhai-cli tool](#2.8.5.-run-the-rhai-cli-tool)
+[2.10.5. Run the rhai-cli tool](#2.10.5.-run-the-rhai-cli-tool)
 
-[2.8.6. Back up the inferenceservice-config ConfigMap](#2.8.6.-back-up-the-inferenceservice-config-configmap)
+[2.10.6. Back up the inferenceservice-config ConfigMap](#2.10.6.-back-up-the-inferenceservice-config-configmap)
 
-[2.8.7. Migrate InferenceServices to RawDeployment mode](#2.8.7.-migrate-inferenceservices-to-rawdeployment-mode)
+[2.10.7. Migrate InferenceServices to RawDeployment mode](#2.10.7.-migrate-inferenceservices-to-rawdeployment-mode)
 
-[2.8.7.1 Convert Serverless InferenceServices to RawDeployment](#2.8.7.1-convert-serverless-inferenceservices-to-rawdeployment)
+[2.10.7.1 Convert Serverless InferenceServices to RawDeployment](#2.10.7.1-convert-serverless-inferenceservices-to-rawdeployment)
 
-[2.8.7.2 Convert ModelMesh InferenceServices to RawDeployment](#2.8.7.2-convert-modelmesh-inferenceservices-to-rawdeployment)
+[2.10.7.2 Convert ModelMesh InferenceServices to RawDeployment](#2.10.7.2-convert-modelmesh-inferenceservices-to-rawdeployment)
 
-[2.8.7.3 Verification of InferenceServices migration](#2.8.7.3-verification-of-inferenceservices-migration)
+[2.10.7.3 Verification of InferenceServices migration](#2.10.7.3-verification-of-inferenceservices-migration)
 
-[2.8.8. Update the inferenceservice-config ConfigMap](#2.8.8.-update-the-inferenceservice-config-configmap)
+[2.10.8. Update the inferenceservice-config ConfigMap](#2.10.8.-update-the-inferenceservice-config-configmap)
 
-[2.8.9. Update cluster configuration for migration](#2.8.9.-update-cluster-configuration-for-migration)
+[2.10.9. Update cluster configuration for migration](#2.10.9.-update-cluster-configuration-for-migration)
 
-[2.8.10. Prepare distributed inference for migration](#2.8.10.-prepare-distributed-inference-for-migration)
+[2.10.10. Prepare distributed inference for migration](#2.10.10.-prepare-distributed-inference-for-migration)
 
-[2.8.10.1. Install Red Hat Connectivity Link for distributed inference](#2.8.10.1.-install-red-hat-connectivity-link-for-distributed-inference)
+[2.10.10.1. Install Red Hat Connectivity Link for distributed inference](#2.10.10.1.-install-red-hat-connectivity-link-for-distributed-inference)
 
-[2.8.10.2. Configure Red Hat Connectivity Link for disconnected environments](#2.8.10.2.-configure-red-hat-connectivity-link-for-disconnected-environments)
+[2.10.10.2. Configure Red Hat Connectivity Link for disconnected environments](#2.10.10.2.-configure-red-hat-connectivity-link-for-disconnected-environments)
 
-[2.8.10.3. Configure authentication for LLMInferenceService resources](#2.8.10.3.-configure-authentication-for-llminferenceservice-resources)
+[2.10.10.3. Configure authentication for LLMInferenceService resources](#2.10.10.3.-configure-authentication-for-llminferenceservice-resources)
 
-[2.8.10.4. Freeze LLMInferenceService configuration for upgrade](#2.8.10.4.-freeze-llminferenceservice-configuration-for-upgrade)
+[2.10.10.4. Freeze LLMInferenceService configuration for upgrade](#2.10.10.4.-freeze-llminferenceservice-configuration-for-upgrade)
 
-[2.8.11. Verify migration readiness](#2.8.11.-verify-migration-readiness)
+[2.10.11. Verify migration readiness](#2.10.11.-verify-migration-readiness)
 
-[2.9. Kubeflow Training Operator \- Before upgrade](#2.9.-kubeflow-training-operator---before-upgrade)
+[2.11. Kubeflow Training Operator \- Before upgrade](#2.11.-kubeflow-training-operator---before-upgrade)
 
-[2.10. OpenShift AI Operator \- Before upgrade](#2.10.-openshift-ai-operator---before-upgrade)
+[2.12. OpenShift AI Operator \- Before upgrade](#2.12.-openshift-ai-operator---before-upgrade)
 
-[Chapter 3\. Upgrade to 3.5](#chapter-3.-upgrade-to-3.3-\(latest\))
+[Chapter 3\. Upgrade to 3.5](#chapter-3.-upgrade-to-3.5-latest)
 
 [3.1. OpenShift AI Operator](#3.1.-openshift-ai-operator)
 
-[Chapter 4\. After upgrading to 3.5](#chapter-4.-after-upgrading-to-3.3-\(latest\))
+[Chapter 4\. After upgrading to 3.5](#chapter-4.-after-upgrading-to-3.5-latest)
 
 [4.1. OpenShift AI Operator \- After upgrade](#4.1.-openshift-ai-operator---after-upgrade)
 
@@ -1084,7 +1084,7 @@ As an OpenShift AI user, for each Feature Store instance:
 
 2. Verify that the Feature Store UI shows any features, entities, feature-views, data sources, and feature services that you previously configured in your feature store.
 
-##  **2.3. Llama Stack / OGX (Open GenAI Stack) \- Before upgrade** {#2.3.-llama-stack---before-upgrade}
+##  **2.5. Llama Stack / OGX (Open GenAI Stack) \- Before upgrade** {#2.5.-llama-stack---before-upgrade}
 
 **IMPORTANT** 
 
@@ -1116,7 +1116,7 @@ Since Llama Stack was in Technology Preview in 2.25.x and has been renamed to OG
 
 * All resources stored in SQLite
 
-###  **2.3.1. Llama Stack upgrade steps for cluster administrators** {#2.3.1.-llama-stack-upgrade-steps-for-cluster-administrators}
+###  **2.5.1. Llama Stack upgrade steps for cluster administrators** {#2.5.1.-llama-stack-upgrade-steps-for-cluster-administrators}
 
 **Prerequisites**
 
@@ -1148,7 +1148,7 @@ Since Llama Stack was in Technology Preview in 2.25.x and has been renamed to OG
 
    * Provide them with the OpenShift AI 3.5 OGX documentation for recreating deployments. See [Working with Llama Stack](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/working_with_llama_stack/index).
 
-### **2.3.2. Llama Stack upgrade steps for LlamaStackDistribution resource owners** {#2.3.2.-llama-stack-upgrade-steps-for-llamastackdistribution-resource-owners}
+### **2.5.2. Llama Stack upgrade steps for LlamaStackDistribution resource owners** {#2.5.2.-llama-stack-upgrade-steps-for-llamastackdistribution-resource-owners}
 
 If you are a **LlamaStackDistribution** resource owner in OpenShift AI 2.25.9 (and later), you must prepare to delete the **LlamaStackDistribution** resources before upgrade and recreate them as **OGXServer** CRs after upgrade. To prepare, you must archive Llama Stack deployment data that can be used as reference when recreating your deployment.
 
@@ -1237,7 +1237,7 @@ If you are a **LlamaStackDistribution** resource owner in OpenShift AI 2.25.9 (a
 
       * Prepare migration scripts as well as documentation.
 
-## **2.4. AI Pipelines \- Before upgrade** {#2.4.-ai-pipelines---before-upgrade}
+## **2.6. AI Pipelines \- Before upgrade** {#2.6.-ai-pipelines---before-upgrade}
 
 Upgrading to OpenShift AI 3.5 does not introduce major functional changes to AI Pipelines, and existing pipelines are expected to continue running without modification.
 
@@ -1311,7 +1311,7 @@ However, the upgrade includes updates to API versions and RBAC permissions. Befo
 
 ## 
 
-## **2.5. TrustyAI \- Before upgrade** {#2.5.-trustyai---before-upgrade}
+## **2.7. TrustyAI \- Before upgrade** {#2.7.-trustyai---before-upgrade}
 
 To check whether you must complete upgrade tasks for TrustyAI, confirm that the management state of the TrustyAI component for your Data Science Cluster is Managed. You can then backup TrustyAI metrics and data storage, and migrate TrustyAI Guardrails Orchestrator services.
 
@@ -1327,7 +1327,7 @@ Complete all steps in the following procedures in the order presented. Do not pr
 
 * TrustyAI \- Before upgrade \- Guardrails Orchestrator
 
-### **2.5.1. TrustyAI \- Before upgrade \- Prepare for backup** {#2.5.1.-trustyai---before-upgrade---prepare-for-backup}
+### **2.7.1. TrustyAI \- Before upgrade \- Prepare for backup** {#2.7.1.-trustyai---before-upgrade---prepare-for-backup}
 
 Verify that the management state of the TrustyAI component for your Data Science Cluster is **Managed** and create a directory for backups.
 
@@ -1381,7 +1381,7 @@ Verify that the management state of the TrustyAI component for your Data Science
    $ export BACKUP_DIR=/tmp/rhoai-upgrade-backup/trustyai
    ```
 
-### **2.5.2. TrustyAI \- Before upgrade \- Backup metrics** {#2.5.2.-trustyai---before-upgrade---backup-metrics}
+### **2.7.2. TrustyAI \- Before upgrade \- Backup metrics** {#2.7.2.-trustyai---before-upgrade---backup-metrics}
 
 You can backup scheduled TrustyAI metrics before you upgrade OpenShift AI 2.25.9 (and later) to 3.5.
 
@@ -1531,7 +1531,7 @@ For each namespace that has a TrustyAI service, follow these steps to backup sch
    /tmp/rhoai-upgrade-backup/trustyai/trustyai-metrics-test-trustyaiservice-upgrade-20260218-175450.json
    ```
 
-### **2.5.3. TrustyAI \- Before upgrade \- Backup data storage** {#2.5.3.-trustyai---before-upgrade---backup-data-storage}
+### **2.7.3. TrustyAI \- Before upgrade \- Backup data storage** {#2.7.3.-trustyai---before-upgrade---backup-data-storage}
 
 You can backup TrustyAI data storage before you upgrade OpenShift AI 2.25.9 (and later) to 3.5. The **rhai-cli** `trustyai.data` migration action auto-detects storage type (PVC or DATABASE) from the TrustyAIService CR and performs the appropriate backup.
 
@@ -1601,7 +1601,7 @@ The action ends with **Preparation trustyai.data completed successfully\!**.
 
 If the action fails, it provides error messages. Common issues are: PVC not bound, MariaDB pod not running, or missing credentials secret.
 
-### **2.5.4. TrustyAI \- Before upgrade \- Guardrails Orchestrator** {#2.5.4.-trustyai---before-upgrade---guardrails-orchestrator}
+### **2.7.4. TrustyAI \- Before upgrade \- Guardrails Orchestrator** {#2.7.4.-trustyai---before-upgrade---guardrails-orchestrator}
 
 Before you upgrade OpenShift AI 2.25.9 (and later) to 3.5, set the name of all TrustyAI Guardrails Orchestrator services, validate the custom resource, and check for OpenTelemetry exporters.
 
@@ -1726,9 +1726,9 @@ For each namespace that has the TrustyAI Guardrails Orchestrator service:
    The output should be a non-empty dictionary. If you have no additional **GuardrailsOrchestrator** instances, you have completed the Before upgrade \- Guardrails Orchestrator procedure. Otherwise, repeat the steps in this procedure for additional instances.
 ## 
 
-## **2.6. Workbenches \- Before upgrade** {#2.6.-workbenches---before-upgrade}
+## **2.8. Workbenches \- Before upgrade** {#2.8.-workbenches---before-upgrade}
 
-### **2.6.1. About upgrading your workbenches** {#2.6.1.-about-upgrading-your-workbenches}
+### **2.8.1. About upgrading your workbenches** {#2.8.1.-about-upgrading-your-workbenches}
 
 As a Red Hat OpenShift AI administrator, you have flexibility in your upgrade strategy for your workbench images and server.
 
@@ -1749,7 +1749,7 @@ There are two major upgrade paths to follow. As a Red Hat OpenShift AI administr
   **Important**  
   Workbenches that are not migrated will remain on the OpenShift AI 2.25.9 (and later) authentication layer. This legacy setup, paired with potential **NB\_PREFIX** routing conflicts, often results in redirection loops or connectivity failures—particularly for RStudio, Code Server, or custom images.
 
-###  **2.6.2. Prepare your workbenches for migration** {#2.6.2.-prepare-your-workbenches-for-migration}
+###  **2.8.2. Prepare your workbenches for migration** {#2.8.2.-prepare-your-workbenches-for-migration}
 
 **Important**
 
@@ -1854,7 +1854,7 @@ Result:
 
 ## 
 
-## **2.7. Ray Training Operator \- Before upgrade** {#2.7.-ray-training-operator---before-upgrade}
+## **2.9. Ray Training Operator \- Before upgrade** {#2.9.-ray-training-operator---before-upgrade}
 
 Before upgrading from Red Hat OpenShift AI to 3.5, you must prepare your existing Ray clusters to work with the 3.5 architecture.
 
@@ -1882,7 +1882,7 @@ Before you begin the migration process, warn your users that it will cause tempo
 
 **Prerequisites**
 
-* **WARNING:** You must follow the [Before upgrade steps for the Workbench component](#2.6.-workbenches---before-upgrade) before you migrate your Ray clusters.
+* **WARNING:** You must follow the [Before upgrade steps for the Workbench component](#2.8.-workbenches---before-upgrade) before you migrate your Ray clusters.
 
 * You have cluster administrator access.
 
@@ -2050,13 +2050,13 @@ WARNING: Proceeding with the RHOAI upgrade without resolving these issues may re
 
 ## 
 
-## **2.8. Model serving \- Before upgrade** {#2.8.-model-serving---before-upgrade}
+## **2.10. Model serving \- Before upgrade** {#2.10.-model-serving---before-upgrade}
 
 Migrate your model serving workloads from removed deployment modes (**Serverless** and **ModelMesh**) to **RawDeployment** mode before upgrading Red Hat OpenShift AI from version to 3.5.
 
 Red Hat OpenShift AI 3.5 does not include **Serverless** and **ModelMesh** deployment modes. This guide explains how to migrate model serving workloads by moving from KServe **Serverless** and **ModelMesh** configurations to **RawDeployment** mode. It also includes instructions for migrating distributed inference workloads based on the **LLMInferenceService** custom resource.
 
-###  **2.8.1. Migration impact and scope** {#2.8.1.-migration-impact-and-scope}
+###  **2.10.1. Migration impact and scope** {#2.10.1.-migration-impact-and-scope}
 
 The migration requires both cluster administrators and users to work together to update infrastructure and workloads:
 
@@ -2082,7 +2082,7 @@ Use the **rhai-cli** tool to analyze your cluster and determine your specific mi
 
 All applicable procedures in this section must be completed before upgrading the Red Hat OpenShift AI operator from version to 3.5. Failure to complete these steps will result in service disruptions for model inference endpoints.
 
-### **2.8.2. Removed model serving configurations** {#2.8.2.-removed-model-serving-configurations}
+### **2.10.2. Removed model serving configurations** {#2.10.2.-removed-model-serving-configurations}
 
 As of Red Hat OpenShift AI 3.5, the following model serving configurations are removed:
 
@@ -2098,27 +2098,27 @@ As of Red Hat OpenShift AI 3.5, the following model serving configurations are r
 
 All model serving workloads must migrate to **RawDeployment** mode, which provides standard Kubernetes **Deployment** resources without serverless infrastructure.
 
-### **2.8.3. Migration workflow for model serving** {#2.8.3.-migration-workflow-for-model-serving}
+### **2.10.3. Migration workflow for model serving** {#2.10.3.-migration-workflow-for-model-serving}
 
 The migration requires coordination between cluster administrators and users. The specific steps you complete depend on your cluster configuration and workloads.
 
 Following is an overview of the steps that you must complete for the model serving component before you upgrade the Red Hat OpenShift AI operator:
 
-1. Run the **rhai-cli** tool and analyze your cluster configuration, as described in [Run the rhai-cli script.](#2.8.5.-run-the-rhai-cli-tool)
+1. Run the **rhai-cli** tool and analyze your cluster configuration, as described in [Run the rhai-cli script.](#2.10.5.-run-the-rhai-cli-tool)
 
-2. Back up the inferenceservice-config ConfigMap, as described in [Back up the inferenceservice-config ConfigMap](#2.8.6.-back-up-the-inferenceservice-config-configmap).
+2. Back up the inferenceservice-config ConfigMap, as described in [Back up the inferenceservice-config ConfigMap](#2.10.6.-back-up-the-inferenceservice-config-configmap).
 
-3. Update the inferenceservice-config ConfigMap with hardware profiles ignorelist changes, as described in [Update the inferenceservice-config ConfigMap](#2.8.8.-update-the-inferenceservice-config-configmap)..
+3. Update the inferenceservice-config ConfigMap with hardware profiles ignorelist changes, as described in [Update the inferenceservice-config ConfigMap](#2.10.8.-update-the-inferenceservice-config-configmap)..
 
-4. Convert ModelMesh and Serverless InferenceServices to RawDeployment mode (if you have impacted InferenceServices), as described in [Migrate InferenceServices to RawDeployment mode](#2.8.7.-migrate-inferenceservices-to-rawdeployment-mode).
+4. Convert ModelMesh and Serverless InferenceServices to RawDeployment mode (if you have impacted InferenceServices), as described in [Migrate InferenceServices to RawDeployment mode](#2.10.7.-migrate-inferenceservices-to-rawdeployment-mode).
 
-5. Update cluster configuration to set RawDeployment as the default deployment mode and disable removed components, as described in  [Update cluster configuration for migration](#2.8.9.-update-cluster-configuration-for-migration).
+5. Update cluster configuration to set RawDeployment as the default deployment mode and disable removed components, as described in  [Update cluster configuration for migration](#2.10.9.-update-cluster-configuration-for-migration).
 
-6. Prepare distributed inference workloads (if you have LLMInferenceService resources): Install Red Hat Connectivity Link, configure authentication, and freeze LLMInferenceService configurations, as described in [Prepare distributed inference for migration](#2.8.10.-prepare-distributed-inference-for-migration).
+6. Prepare distributed inference workloads (if you have LLMInferenceService resources): Install Red Hat Connectivity Link, configure authentication, and freeze LLMInferenceService configurations, as described in [Prepare distributed inference for migration](#2.10.10.-prepare-distributed-inference-for-migration).
 
-7. Verify migration readiness using the rhai-cli tool, as described in [Verify migration readiness](#2.8.11.-verify-migration-readiness).
+7. Verify migration readiness using the rhai-cli tool, as described in [Verify migration readiness](#2.10.11.-verify-migration-readiness).
 
-### **2.8.4. Prerequisites for model serving migration** {#2.8.4.-prerequisites-for-model-serving-migration}
+### **2.10.4. Prerequisites for model serving migration** {#2.10.4.-prerequisites-for-model-serving-migration}
 
 Before migrating Model Serving workloads from Red Hat OpenShift AI 2.25.9 (and later) to 3.5, verify that your environment meets the following requirements.
 
@@ -2134,7 +2134,7 @@ If you cannot remove OpenShift Service Mesh v2 due to other dependencies, you mu
 
 If a conflicting OSSM v2.x subscription is present when you create a **GatewayClass** resource, the Cluster Ingress Operator attempts to install the required OSSM v3.x components but fails. This causes Gateway API resources to have no effect and no proxy gets configured to route traffic. Do not continue with the migration steps until after you resolve this conflict.
 
-### **2.8.5. Run the rhai-cli tool** {#2.8.5.-run-the-rhai-cli-tool}
+### **2.10.5. Run the rhai-cli tool** {#2.10.5.-run-the-rhai-cli-tool}
 
 Set up the **rhai-cli** container to analyze your model serving configuration.
 
@@ -2185,7 +2185,7 @@ All migration commands must be executed within the **rhai-cli** container, as it
    * **dependency**  
      Indicates operator installation or removal requirements.
 
-### **2.8.6. Back up the inferenceservice-config ConfigMap** {#2.8.6.-back-up-the-inferenceservice-config-configmap}
+### **2.10.6. Back up the inferenceservice-config ConfigMap** {#2.10.6.-back-up-the-inferenceservice-config-configmap}
 
 Create a backup of the **inferenceservice-config** **ConfigMap** before beginning the migration process.
 
@@ -2219,7 +2219,7 @@ Run this backup command on your local machine, not inside the **rhai-cli** conta
   The command displays the backup file with its size and timestamp.
 
 
-### **2.8.7. Migrate InferenceServices to RawDeployment mode** {#2.8.7.-migrate-inferenceservices-to-rawdeployment-mode}
+### **2.10.7. Migrate InferenceServices to RawDeployment mode** {#2.10.7.-migrate-inferenceservices-to-rawdeployment-mode}
 
 Convert your **ModelMesh** and **Serverless** **InferenceServices** to **RawDeployment** mode before upgrading to Red Hat OpenShift AI 3.5. OpenShift AI 3.5 does not include the ModelMesh serving runtime (multi-model serving) and Serverless deployment mode, requiring all model serving workloads to use **RawDeployment** mode.
 
@@ -2237,7 +2237,7 @@ You must convert all **InferenceServices** to **RawDeployment** mode before upgr
 
 * You are logged into the rhai-cli container, as described in [Log in to the cluster from within the pod.](#1.3.1-log-in-to-the-cluster-from-within-the-pod)
 
-#### **2.8.7.1 Convert Serverless InferenceServices to RawDeployment** {#2.8.7.1-convert-serverless-inferenceservices-to-rawdeployment}
+#### **2.10.7.1 Convert Serverless InferenceServices to RawDeployment** {#2.10.7.1-convert-serverless-inferenceservices-to-rawdeployment}
 
 The following procedure describes how to use the **rhai-cli** migrate command to convert  Serverless InferenceServices to RawDeployment.  For manual migration workflows and additional details, see the Knowledge Base article at [Converting ModelMesh and Serverless InferenceServices to RawDeployment](https://access.redhat.com/articles/7134025).
 
@@ -2268,7 +2268,7 @@ The following procedure describes how to use the **rhai-cli** migrate command to
    FAIL - blocking findings detected
    ```
 
-   If no Serverless workloads are found, skip to the next section, [Convert ModelMesh InferenceServices to RawDeployment](#2.8.7.2-convert-modelmesh-inferenceservices-to-rawdeployment). 
+   If no Serverless workloads are found, skip to the next section, [Convert ModelMesh InferenceServices to RawDeployment](#2.10.7.2-convert-modelmesh-inferenceservices-to-rawdeployment). 
 
    If Serverless workloads are found, for each of the namespaces listed in the output, repeat the following steps 2 through 5\.
 
@@ -2344,7 +2344,7 @@ The following procedure describes how to use the **rhai-cli** migrate command to
 
 #### 
 
-#### **2.8.7.2 Convert ModelMesh InferenceServices to RawDeployment** {#2.8.7.2-convert-modelmesh-inferenceservices-to-rawdeployment}
+#### **2.10.7.2 Convert ModelMesh InferenceServices to RawDeployment** {#2.10.7.2-convert-modelmesh-inferenceservices-to-rawdeployment}
 
 The following procedure describes how to use the **rhai-cli** migrate command to convert  ModelMesh InferenceServices to RawDeployment.  For manual migration workflows and additional details, see the Knowledge Base article at [Converting ModelMesh and Serverless InferenceServices to RawDeployment](https://access.redhat.com/articles/7134025).
 
@@ -2500,7 +2500,7 @@ The following procedure describes how to use the **rhai-cli** migrate command to
 
 #### 
 
-#### **2.8.7.3 Verification of InferenceServices migration **                             {#2.8.7.3-verification-of-inferenceservices-migration}
+#### **2.10.7.3 Verification of InferenceServices migration** {#2.10.7.3-verification-of-inferenceservices-migration}
 
 **Procedure**
 
@@ -2526,7 +2526,7 @@ The following procedure describes how to use the **rhai-cli** migrate command to
      PASS - all checks passed
    ```
 
-### **2.8.8. Update the inferenceservice-config ConfigMap** {#2.8.8.-update-the-inferenceservice-config-configmap}
+### **2.10.8. Update the inferenceservice-config ConfigMap** {#2.10.8.-update-the-inferenceservice-config-configmap}
 
 Update the **inferenceservice-config** **ConfigMap** to apply hardware profiles ignorelist changes and prevent **InferenceService** redeployment during the upgrade.
 
@@ -2560,7 +2560,7 @@ Update the **inferenceservice-config** **ConfigMap** to apply hardware profiles 
 
   The ConfigMap displays the updated hardware profiles ignorelist configuration.
 
-### **2.8.9. Update cluster configuration for migration** {#2.8.9.-update-cluster-configuration-for-migration}
+### **2.10.9. Update cluster configuration for migration** {#2.10.9.-update-cluster-configuration-for-migration}
 
 Update cluster-wide resources to prepare for the Red Hat OpenShift AI Operator upgrade by configuring the **DataScienceCluster** (DSC), uninstalling removed Operators, and cleaning up legacy components.
 
@@ -2670,7 +2670,7 @@ Update cluster-wide resources to prepare for the Red Hat OpenShift AI Operator u
       5. Click **Uninstall**.  
          For detailed instructions, see [Deleting Operators from a cluster](https://docs.redhat.com/en/documentation/openshift_container_platform/latest/html/operators/administrator-tasks#olm-deleting-operators-from-cluster).
 
-### **2.8.10. Prepare distributed inference for migration** {#2.8.10.-prepare-distributed-inference-for-migration}
+### **2.10.10. Prepare distributed inference for migration** {#2.10.10.-prepare-distributed-inference-for-migration}
 
 Prepare your distributed inference (**llm-d**) deployments using **LLMInferenceService** for migration to Red Hat OpenShift AI 3.5 by installing required operators and configuring authentication for your models.
 
@@ -2684,7 +2684,7 @@ This section requires collaboration between cluster administrators and users. Cl
 
 #### 
 
-#### **2.8.10.1. Install Red Hat Connectivity Link for distributed inference** {#2.8.10.1.-install-red-hat-connectivity-link-for-distributed-inference}
+#### **2.10.10.1. Install Red Hat Connectivity Link for distributed inference** {#2.10.10.1.-install-red-hat-connectivity-link-for-distributed-inference}
 
 Install and configure Red Hat Connectivity Link (RHCL) to provide authentication functionality for distributed inference workloads using **LLMInferenceService**.
 
@@ -2827,7 +2827,7 @@ Install and configure Red Hat Connectivity Link (RHCL) to provide authentication
 
 * [Installing Connectivity Link on OpenShift](https://docs.redhat.com/en/documentation/red_hat_connectivity_link/1.2/html/installing_connectivity_link_on_openshift/index)
 
-####  **2.8.10.2. Configure Red Hat Connectivity Link for disconnected environments** {#2.8.10.2.-configure-red-hat-connectivity-link-for-disconnected-environments}
+####  **2.10.10.2. Configure Red Hat Connectivity Link for disconnected environments** {#2.10.10.2.-configure-red-hat-connectivity-link-for-disconnected-environments}
 
 Apply additional configuration for Red Hat Connectivity Link when running distributed inference in disconnected environments, including wasm-shim image configuration and mirror registry settings.
 
@@ -2931,7 +2931,7 @@ Complete this procedure only if you are running distributed inference in a disco
   ]
   ```
 
-#### **2.8.10.3. Configure authentication for LLMInferenceService resources** {#2.8.10.3.-configure-authentication-for-llminferenceservice-resources}
+#### **2.10.10.3. Configure authentication for LLMInferenceService resources** {#2.10.10.3.-configure-authentication-for-llminferenceservice-resources}
 
 Configure authentication for your **LLMInferenceService** resources to handle security changes in Red Hat OpenShift AI 3.5 and later, where distributed inference is secure by default.
 
@@ -3022,7 +3022,7 @@ Configure authentication for your **LLMInferenceService** resources to handle se
 
 In Red Hat OpenShift AI 3.5 and later, distributed inference with **LLMInferenceService** is secure by default. Applications that attempt to connect without proper authentication will receive HTTP 403 Forbidden errors. Choose the authentication method that best matches your security requirements.
 
-#### **2.8.10.4. Freeze LLMInferenceService configuration for upgrade** {#2.8.10.4.-freeze-llminferenceservice-configuration-for-upgrade}
+#### **2.10.10.4. Freeze LLMInferenceService configuration for upgrade** {#2.10.10.4.-freeze-llminferenceservice-configuration-for-upgrade}
 
 Pin your **LLMInferenceService** configurations to use Red Hat OpenShift AI 2.25.9 (and later) templates to prevent scheduler pod failures during the upgrade to version 3.5.
 
@@ -3096,7 +3096,7 @@ Pin your **LLMInferenceService** configurations to use Red Hat OpenShift AI 2.25
 
   The command completes without errors and confirms migration readiness.
 
-### **2.8.11. Verify migration readiness** {#2.8.11.-verify-migration-readiness}
+### **2.10.11. Verify migration readiness** {#2.10.11.-verify-migration-readiness}
 
 Verify that all migration prerequisites have been completed and your cluster is ready for the Red Hat OpenShift AI operator upgrade from version 2.25.9 (and later) to 3.5.
 
@@ -3135,7 +3135,7 @@ If the **rhai-cli** output identifies issues:
 Do not proceed with the Red Hat OpenShift AI operator upgrade from version 2.25.9 (and later) to 3.5 if the **rhai-cli** output shows any critical issues. Address all critical issues by completing the relevant component migration procedures before upgrading.
 ## 
 
-## **2.9. Kubeflow Training Operator \- Before upgrade** {#2.9.-kubeflow-training-operator---before-upgrade}
+## **2.11. Kubeflow Training Operator \- Before upgrade** {#2.11.-kubeflow-training-operator---before-upgrade}
 
 You can upgrade Red Hat OpenShift AI 2.25.9 (and later) to 3.5 while PyTorchJobs are running; the jobs continue to run during the upgrade process and complete as normal.
 
@@ -3168,7 +3168,7 @@ pytorch-training   pytorch-distributed-training   Running     4m27s
 
 As a cluster administrator, if you want to perform an OpenShift Container Platform (OCP) upgrade, an OCP upgrade process might stop nodes which might interrupt PyTorchJobs. Ensure that either no PyTorchJobs are running during the OCP upgrade or verify that the running PyTorchJobs include checkpointing so that they are resilient to failure.
 
-## **2.10. OpenShift AI Operator \- Before upgrade** {#2.10.-openshift-ai-operator---before-upgrade}
+## **2.12. OpenShift AI Operator \- Before upgrade** {#2.12.-openshift-ai-operator---before-upgrade}
 
 Before upgrading Red Hat OpenShift AI from version 2.25.9 (and later) to 3.5, complete the following steps to ensure a successful migration of the OpenShift AI Operator.
 
@@ -3255,7 +3255,7 @@ If you have bookmarked dashboard URLs, you must recreate redirects **after** the
 
 # 
 
-# **Chapter 3\. Upgrade to 3.5** {#chapter-3.-upgrade-to-3.3-(latest)}
+# **Chapter 3\. Upgrade to 3.5** {#chapter-3.-upgrade-to-3.5-latest}
 
 ## **3.1. OpenShift AI Operator**  {#3.1.-openshift-ai-operator}
 
@@ -3500,7 +3500,7 @@ After preparing your cluster and changing the subscription channel, you must man
    **Note**  
    Replace `rhai-migration` with the namespace where your rhai-cli pod is deployed. This binding is required for all post-upgrade rhai-cli commands in Chapter 4.
 
-# **Chapter 4\. After upgrading to 3.5** {#chapter-4.-after-upgrading-to-3.3-(latest)}
+# **Chapter 4\. After upgrading to 3.5** {#chapter-4.-after-upgrading-to-3.5-latest}
 
 After you upgrade OpenShift AI from version 2.25.9 (and later) to 3.5, you must validate that workload migration was successful for each of the components installed on your OpenShift AI cluster.
 

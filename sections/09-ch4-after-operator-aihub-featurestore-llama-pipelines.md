@@ -1,4 +1,4 @@
-# **Chapter 4\. After upgrading to 3.5** {#chapter-4.-after-upgrading-to-3.3-(latest)}
+# **Chapter 4\. After upgrading to 3.5** {#chapter-4.-after-upgrading-to-3.5-latest}
 
 After you upgrade OpenShift AI from version 2.25.9 (and later) to 3.5, you must validate that workload migration was successful for each of the components installed on your OpenShift AI cluster.
 

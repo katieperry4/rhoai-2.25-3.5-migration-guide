@@ -41,77 +41,77 @@
 
 [2.5. Llama Stack / OGX (Open GenAI Stack) \- Before upgrade](#2.5.-llama-stack---before-upgrade)
 
-[2.3.1. Llama Stack upgrade steps for cluster administrators](#2.3.1.-llama-stack-upgrade-steps-for-cluster-administrators)
+[2.5.1. Llama Stack upgrade steps for cluster administrators](#2.5.1.-llama-stack-upgrade-steps-for-cluster-administrators)
 
-[2.3.2. Llama Stack upgrade steps for LlamaStackDistribution resource owners](#2.3.2.-llama-stack-upgrade-steps-for-llamastackdistribution-resource-owners)
+[2.5.2. Llama Stack upgrade steps for LlamaStackDistribution resource owners](#2.5.2.-llama-stack-upgrade-steps-for-llamastackdistribution-resource-owners)
 
-[2.4. AI Pipelines \- Before upgrade](#2.4.-ai-pipelines---before-upgrade)
+[2.6. AI Pipelines \- Before upgrade](#2.6.-ai-pipelines---before-upgrade)
 
-[2.5. TrustyAI \- Before upgrade](#2.5.-trustyai---before-upgrade)
+[2.7. TrustyAI \- Before upgrade](#2.7.-trustyai---before-upgrade)
 
-[2.5.1. TrustyAI \- Before upgrade \- Prepare for backup](#2.5.1.-trustyai---before-upgrade---prepare-for-backup)
+[2.7.1. TrustyAI \- Before upgrade \- Prepare for backup](#2.7.1.-trustyai---before-upgrade---prepare-for-backup)
 
-[2.5.2. TrustyAI \- Before upgrade \- Backup metrics](#2.5.2.-trustyai---before-upgrade---backup-metrics)
+[2.7.2. TrustyAI \- Before upgrade \- Backup metrics](#2.7.2.-trustyai---before-upgrade---backup-metrics)
 
-[2.5.3. TrustyAI \- Before upgrade \- Backup data storage](#2.5.3.-trustyai---before-upgrade---backup-data-storage)
+[2.7.3. TrustyAI \- Before upgrade \- Backup data storage](#2.7.3.-trustyai---before-upgrade---backup-data-storage)
 
-[2.5.4. TrustyAI \- Before upgrade \- Guardrails Orchestrator](#2.5.4.-trustyai---before-upgrade---guardrails-orchestrator)
+[2.7.4. TrustyAI \- Before upgrade \- Guardrails Orchestrator](#2.7.4.-trustyai---before-upgrade---guardrails-orchestrator)
 
-[2.6. Workbenches \- Before upgrade](#2.6.-workbenches---before-upgrade)
+[2.8. Workbenches \- Before upgrade](#2.8.-workbenches---before-upgrade)
 
-[2.6.1. About upgrading your workbenches](#2.6.1.-about-upgrading-your-workbenches)
+[2.8.1. About upgrading your workbenches](#2.8.1.-about-upgrading-your-workbenches)
 
-[2.6.2. Prepare your workbenches for migration](#2.6.2.-prepare-your-workbenches-for-migration)
+[2.8.2. Prepare your workbenches for migration](#2.8.2.-prepare-your-workbenches-for-migration)
 
-[2.7. Ray Training Operator \- Before upgrade](#2.7.-ray-training-operator---before-upgrade)
+[2.9. Ray Training Operator \- Before upgrade](#2.9.-ray-training-operator---before-upgrade)
 
-[2.8. Model serving \- Before upgrade](#2.8.-model-serving---before-upgrade)
+[2.10. Model serving \- Before upgrade](#2.10.-model-serving---before-upgrade)
 
-[2.8.1. Migration impact and scope](#2.8.1.-migration-impact-and-scope)
+[2.10.1. Migration impact and scope](#2.10.1.-migration-impact-and-scope)
 
-[2.8.2. Removed model serving configurations](#2.8.2.-removed-model-serving-configurations)
+[2.10.2. Removed model serving configurations](#2.10.2.-removed-model-serving-configurations)
 
-[2.8.3. Migration workflow for model serving](#2.8.3.-migration-workflow-for-model-serving)
+[2.10.3. Migration workflow for model serving](#2.10.3.-migration-workflow-for-model-serving)
 
-[2.8.4. Prerequisites for model serving migration](#2.8.4.-prerequisites-for-model-serving-migration)
+[2.10.4. Prerequisites for model serving migration](#2.10.4.-prerequisites-for-model-serving-migration)
 
-[2.8.5. Run the rhai-cli tool](#2.8.5.-run-the-rhai-cli-tool)
+[2.10.5. Run the rhai-cli tool](#2.10.5.-run-the-rhai-cli-tool)
 
-[2.8.6. Back up the inferenceservice-config ConfigMap](#2.8.6.-back-up-the-inferenceservice-config-configmap)
+[2.10.6. Back up the inferenceservice-config ConfigMap](#2.10.6.-back-up-the-inferenceservice-config-configmap)
 
-[2.8.7. Migrate InferenceServices to RawDeployment mode](#2.8.7.-migrate-inferenceservices-to-rawdeployment-mode)
+[2.10.7. Migrate InferenceServices to RawDeployment mode](#2.10.7.-migrate-inferenceservices-to-rawdeployment-mode)
 
-[2.8.7.1 Convert Serverless InferenceServices to RawDeployment](#2.8.7.1-convert-serverless-inferenceservices-to-rawdeployment)
+[2.10.7.1 Convert Serverless InferenceServices to RawDeployment](#2.10.7.1-convert-serverless-inferenceservices-to-rawdeployment)
 
-[2.8.7.2 Convert ModelMesh InferenceServices to RawDeployment](#2.8.7.2-convert-modelmesh-inferenceservices-to-rawdeployment)
+[2.10.7.2 Convert ModelMesh InferenceServices to RawDeployment](#2.10.7.2-convert-modelmesh-inferenceservices-to-rawdeployment)
 
-[2.8.7.3 Verification of InferenceServices migration](#2.8.7.3-verification-of-inferenceservices-migration)
+[2.10.7.3 Verification of InferenceServices migration](#2.10.7.3-verification-of-inferenceservices-migration)
 
-[2.8.8. Update the inferenceservice-config ConfigMap](#2.8.8.-update-the-inferenceservice-config-configmap)
+[2.10.8. Update the inferenceservice-config ConfigMap](#2.10.8.-update-the-inferenceservice-config-configmap)
 
-[2.8.9. Update cluster configuration for migration](#2.8.9.-update-cluster-configuration-for-migration)
+[2.10.9. Update cluster configuration for migration](#2.10.9.-update-cluster-configuration-for-migration)
 
-[2.8.10. Prepare distributed inference for migration](#2.8.10.-prepare-distributed-inference-for-migration)
+[2.10.10. Prepare distributed inference for migration](#2.10.10.-prepare-distributed-inference-for-migration)
 
-[2.8.10.1. Install Red Hat Connectivity Link for distributed inference](#2.8.10.1.-install-red-hat-connectivity-link-for-distributed-inference)
+[2.10.10.1. Install Red Hat Connectivity Link for distributed inference](#2.10.10.1.-install-red-hat-connectivity-link-for-distributed-inference)
 
-[2.8.10.2. Configure Red Hat Connectivity Link for disconnected environments](#2.8.10.2.-configure-red-hat-connectivity-link-for-disconnected-environments)
+[2.10.10.2. Configure Red Hat Connectivity Link for disconnected environments](#2.10.10.2.-configure-red-hat-connectivity-link-for-disconnected-environments)
 
-[2.8.10.3. Configure authentication for LLMInferenceService resources](#2.8.10.3.-configure-authentication-for-llminferenceservice-resources)
+[2.10.10.3. Configure authentication for LLMInferenceService resources](#2.10.10.3.-configure-authentication-for-llminferenceservice-resources)
 
-[2.8.10.4. Freeze LLMInferenceService configuration for upgrade](#2.8.10.4.-freeze-llminferenceservice-configuration-for-upgrade)
+[2.10.10.4. Freeze LLMInferenceService configuration for upgrade](#2.10.10.4.-freeze-llminferenceservice-configuration-for-upgrade)
 
-[2.8.11. Verify migration readiness](#2.8.11.-verify-migration-readiness)
+[2.10.11. Verify migration readiness](#2.10.11.-verify-migration-readiness)
 
-[2.9. Kubeflow Training Operator \- Before upgrade](#2.9.-kubeflow-training-operator---before-upgrade)
+[2.11. Kubeflow Training Operator \- Before upgrade](#2.11.-kubeflow-training-operator---before-upgrade)
 
-[2.10. OpenShift AI Operator \- Before upgrade](#2.10.-openshift-ai-operator---before-upgrade)
+[2.12. OpenShift AI Operator \- Before upgrade](#2.12.-openshift-ai-operator---before-upgrade)
 
-[Chapter 3\. Upgrade to 3.5](#chapter-3.-upgrade-to-3.3-\(latest\))
+[Chapter 3\. Upgrade to 3.5](#chapter-3.-upgrade-to-3.5-latest)
 
 [3.1. OpenShift AI Operator](#3.1.-openshift-ai-operator)
 
-[Chapter 4\. After upgrading to 3.5](#chapter-4.-after-upgrading-to-3.3-\(latest\))
+[Chapter 4\. After upgrading to 3.5](#chapter-4.-after-upgrading-to-3.5-latest)
 
 [4.1. OpenShift AI Operator \- After upgrade](#4.1.-openshift-ai-operator---after-upgrade)
 
